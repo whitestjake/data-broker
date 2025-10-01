@@ -11,6 +11,6 @@ create table accounts (
     first_name varchar(20),
     last_name varchar(20),
     email varchar(30),
-    password varchar,
+    password varchar(100),
     primary key (id)
 )
