@@ -1,4 +1,5 @@
 // database services, accessbile by DbService methods.
+// converted from commonJS to ES module
 
 import mysql from 'mysql';
 import dotenv from 'dotenv';
