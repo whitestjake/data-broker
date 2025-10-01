@@ -48,6 +48,10 @@ app.post('/register', async (request, response) => {
         // parses the JSON recieved from the frontend
         const {firstName, lastName, email, password, confirm} = request.body;
 
+        firstName = firstName.toLowerCase();
+        lastName = lastName.toLowerCase();
+        email = email.toLowerCase();
+
         // checks that all fields contain values
         if (!firstName || !lastName || !email || !password || !confirm) {
                 return response.status(400).json({ error: 'All fields are required' });

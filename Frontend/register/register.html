@@ -30,6 +30,12 @@
 
         <div class="email-container">
             <label for="email-input">Email</label>
+            <p id="email-use-error" style="color:red" hidden="hidden">
+                Email already in use
+            </p>
+            <p id="email-valid-error" style="color:red" hidden="hidden">
+                Please enter a valid email
+            </p>
             <input type="text" 
                 id="email-input" 
                 placeholder="Enter your email"
@@ -49,6 +55,9 @@
 
         <div class="confirm-password-container">
             <label for="confirm-password-input">Confirm Password</label>
+            <p id="password-error" style="color:red" hidden="hidden">
+                passwords do not match
+            </p>
             <input 
                 type="text" 
                 id="confirm-password-input" 
@@ -58,6 +67,10 @@
         </div>
 
         <button id="register-button">Register</button>
+
+        <p id="register-success" style="color:green" hidden="hidden">
+            Registration successful!
+        </p>
 
     </main>
     <script src="register.js"></script>

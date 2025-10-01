@@ -14,6 +14,19 @@ registerBtn.onclick = function() {
     const password = passwordInput.value;
     const confirm = confirmInput.value;
 
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(email)) {
+        console.log("Invalid email format");
+        document.getElementById('email-valid-error').removeAttribute('hidden');
+        return;
+    }
+
+    if (password !== confirm) {
+        console.log("Passwords do not match");
+        document.getElementById('password-error').removeAttribute('hidden');
+        return;
+    }
+
     firstNameInput.value = '';
     lastNameInput.value = '';
     emailInput.value = '';
@@ -33,7 +46,15 @@ registerBtn.onclick = function() {
             confirm: confirm
         })
     }).then(response => response.json())
-        .then(data => console.log('Server response:', data));
+      .then(data => {
+        if (data.error) {
+            console.log('Error: ' + data.error);
+            document.getElementById("email-use-error").removeAttribute('hidden');
+        } else {
+            console.log("Registration Successful");
+            document.getElementById('register-success').removeAttribute('hidden');
+        }
+      });
 }
 
 
