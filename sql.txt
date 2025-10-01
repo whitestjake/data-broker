@@ -1,0 +1,16 @@
+create table names (
+    id int not null auto_increment,
+    name varchar(20),
+    date_added Date,
+    primary key (id)
+    
+)
+
+create table accounts (
+    id int not null auto_increment,
+    first_name varchar(20),
+    last_name varchar(20),
+    email varchar(30),
+    password varchar,
+    primary key (id)
+)
