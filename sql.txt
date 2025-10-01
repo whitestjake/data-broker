@@ -1,16 +1,21 @@
-create table names (
+CREATE DATABASE IF NOT EXISTS dse6100_project1;
+USE dse6100_project1;
+
+CREATE TABLE IF NOT EXISTS names (
     id int not null auto_increment,
     name varchar(20),
-    date_added Date,
     primary key (id)
-    
-)
+);
 
-create table accounts (
+CREATE TABLE IF NOT EXISTS accounts (
     id int not null auto_increment,
     first_name varchar(20),
     last_name varchar(20),
-    email varchar(30),
+    email varchar(30) unique, 
     password varchar(100),
+    salary decimal(10,2),
+    age int,
+    registration_date datetime default current_timestamp,
+    last_login_date datetime null,
     primary key (id)
-)
+);
