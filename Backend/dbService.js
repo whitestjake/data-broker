@@ -3,7 +3,6 @@
 
 import mysql from 'mysql';
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
 dotenv.config(); // read from .env file
 
 let instance = null; 
@@ -195,13 +194,11 @@ class DbService{
 
    async newRegistration(firstName, lastName, age, salary, email, password){
       try{
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
             const creationDate = new Date();
             const insertId = await new Promise((resolve, reject)=>{
                const query = "INSERT INTO accounts (first_name, last_name, age, salary, email, password, date_created)" 
                  + " VALUES (?, ?, ?, ?, ?, ?, ?);";
-               this.connection.query(query, [firstName, lastName, age, salary, email, hashedPassword, creationDate], (err, result) => {
+               this.connection.query(query, [firstName, lastName, age, salary, email, password, creationDate], (err, result) => {
                   if(err) reject(new Error(err.message));
                   else resolve(result.insertId);
                });
@@ -218,6 +215,21 @@ class DbService{
             }
       } catch(error){
          console.log(error);
+      }
+   }
+
+   async findUserByEmail(email) {
+      try {
+         return await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE email = ?";
+               this.connection.query(query, [email], (err, results) => {
+                  if (err) reject(err);
+                  else resolve(results.length > 0 ? results[0] : null);
+               });
+         });
+      } catch (err) {
+         console.log(err);
+         throw err;
       }
    }
 

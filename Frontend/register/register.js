@@ -99,6 +99,9 @@ registerBtn.onclick = function() {
         } else {
             console.log("Registration Successful");
             document.getElementById('register-success').removeAttribute('hidden');
+            setTimeout(() => {
+                window.location.replace("http://localhost/data-broker/frontend/home/home.html");
+            }, 1500);
         }
       });
 }
