@@ -127,6 +127,31 @@ class DbService{
         }
    }
 
+   // queries the database to get all values in the `accounts` table
+    async getAccountData(){
+        try{
+           // use await to call an asynchronous function
+           const response = await new Promise((resolve, reject) => 
+              {
+                  const query = "SELECT * FROM accounts;";
+                  this.connection.query(query, 
+                       (err, results) => {
+                             if(err) reject(new Error(err.message));
+                             else resolve(results);
+                       }
+                  );
+               }
+            );
+        
+            // console.log("dbServices.js: search result:");
+            // console.log(response);  // for debugging to see the result of select
+            return response;
+
+        }  catch(error){
+           console.log(error);
+        }
+   }
+
 
    async insertNewName(name){
          try{
@@ -168,15 +193,15 @@ class DbService{
       }
    }
 
-   async newRegistration(firstName, lastName, email, password){
+   async newRegistration(firstName, lastName, age, salary, email, password){
       try{
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             const creationDate = new Date();
             const insertId = await new Promise((resolve, reject)=>{
-               const query = "INSERT INTO accounts (first_name, last_name, email, password, date_created)" 
-                 + " VALUES (?, ?, ?, ?, ?);";
-               this.connection.query(query, [firstName, lastName, email, hashedPassword, creationDate], (err, result) => {
+               const query = "INSERT INTO accounts (first_name, last_name, age, salary, email, password, date_created)" 
+                 + " VALUES (?, ?, ?, ?, ?, ?, ?);";
+               this.connection.query(query, [firstName, lastName, age, salary, email, hashedPassword, creationDate], (err, result) => {
                   if(err) reject(new Error(err.message));
                   else resolve(result.insertId);
                });
@@ -186,6 +211,8 @@ class DbService{
                id: insertId,
                firstName,
                lastName,
+               age,
+               salary,
                email,
                creationDate
             }

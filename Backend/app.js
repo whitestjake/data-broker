@@ -46,7 +46,7 @@ app.post('/register', async (request, response) => {
 
     try {
         // parses the JSON recieved from the frontend
-        const {firstName, lastName, age, salary, email, password, confirm} = request.body;
+        let {firstName, lastName, age, salary, email, password, confirm} = request.body;
 
         firstName = firstName.toLowerCase();
         lastName = lastName.toLowerCase();
@@ -72,12 +72,12 @@ app.post('/register', async (request, response) => {
 
         // passes the values from the json into the newRegistration function from
         // our database service file to submit it to the database
-        const registered = await db.newRegistration(firstName, lastName, email, password);
+        const registered = await db.newRegistration(firstName, lastName, age, salary, email, password);
 
         response.status(201).json({data: registered})
 
     } catch (error) {
-        console.error('Registration Error: error');
+        console.error('Registration Error: ' + error);
         response.status(500).json({error: "Server Error"});
     }
 });
