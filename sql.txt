@@ -2,15 +2,17 @@ create table names (
     id int not null auto_increment,
     name varchar(20),
     date_added Date,
-    primary key (id)
-    
-)
+    primary key (id)  
+);
 
 create table accounts (
     id int not null auto_increment,
     first_name varchar(20),
     last_name varchar(20),
     email varchar(30),
-    password varchar,
+    password varchar(30),
+    last_login date default null,
+    salary decimal(9,2),
+    age int check (age>=0), 
     primary key (id)
-)
+);
