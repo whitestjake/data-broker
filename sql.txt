@@ -10,9 +10,10 @@ create table accounts (
     first_name varchar(20),
     last_name varchar(20),
     email varchar(30),
-    password varchar(30),
-    last_login date default null,
-    salary decimal(9,2),
+    password varchar(100),
+    date_created datetime,
+    last_login datetime default null,
+    salary decimal(9,2) unsigned,
     age int check (age>=0), 
     primary key (id)
 );
