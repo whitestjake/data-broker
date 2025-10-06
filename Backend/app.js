@@ -22,23 +22,6 @@ function isValidEmail(email) {
     return regex.test(email);
 }
 
-// create
-app.post('/insert', (request, response) => {
-    console.log("app: insert a row.");
-    // console.log(request.body); 
-
-    const {name} = request.body;
-    // const db = dbService.getDbServiceInstance();
-
-    const result = db.insertNewName(name);
- 
-    // note that result is a promise
-    result 
-    .then(data => response.json({data: data})) // return the newly added row to frontend, which will show it
-   // .then(data => console.log({data: data})) // debug first before return by response
-   .catch(err => console.log(err));
-});
-
 // post request for server to assist in logging into a valid account
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -137,6 +120,24 @@ app.post('/register', async (request, response) => {
 
 
 // read 
+
+// create
+app.post('/insert', (request, response) => {
+    console.log("app: insert a row.");
+    // console.log(request.body); 
+
+    const {name} = request.body;
+    // const db = dbService.getDbServiceInstance();
+
+    const result = db.insertNewName(name);
+ 
+    // note that result is a promise
+    result 
+    .then(data => response.json({data: data})) // return the newly added row to frontend, which will show it
+   // .then(data => console.log({data: data})) // debug first before return by response
+   .catch(err => console.log(err));
+});
+
 app.get('/getAll', (request, response) => {
     
     // const db = dbService.getDbServiceInstance();
