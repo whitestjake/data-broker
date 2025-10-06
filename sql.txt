@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     date_created datetime,
     last_login datetime default null,
     salary decimal(9,2) unsigned,
-    age int check (age>=0), 
+    age int check (age>=0),
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_login_date DATETIME NULL -- Save data after user login,
     primary key (id)
 );
