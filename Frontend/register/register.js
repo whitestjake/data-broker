@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const registerBtn = document.getElementById('register-button');
 registerBtn.onclick = function() {
-    const firstNameInput = document.getElementById("first-name-input")
-    const lastNameInput = document.getElementById("last-name-input")
-    const ageInput = document.getElementById("age-input")
-    const salaryInput = document.getElementById("salary-input")
-    const emailInput = document.getElementById("email-input")
-    const passwordInput = document.getElementById("password-input")
-    const confirmInput = document.getElementById("confirm-password-input")
+    const firstNameInput = document.getElementById("register-first-name-input")
+    const lastNameInput = document.getElementById("register-last-name-input")
+    const ageInput = document.getElementById("register-age-input")
+    const salaryInput = document.getElementById("register-salary-input")
+    const emailInput = document.getElementById("register-email-input")
+    const passwordInput = document.getElementById("register-password-input")
+    const confirmInput = document.getElementById("register-confirm-password-input")
 
     const firstName = firstNameInput.value;
     const lastName = lastNameInput.value;
@@ -100,8 +100,8 @@ registerBtn.onclick = function() {
             console.log("Registration Successful");
             document.getElementById('register-success').removeAttribute('hidden');
             setTimeout(() => {
-                window.location.replace("http://localhost/data-broker/frontend/home/home.html");
-            }, 1500);
+                window.location.href = "http://localhost/data-broker/frontend/home/home.html";
+            }, 1000);
         }
       });
 }
