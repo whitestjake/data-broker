@@ -132,56 +132,6 @@ app.post('/register', async (request, response) => {
 // read 
 
 // create
-app.post('/insert', (request, response) => {
-    console.log("app: insert a row.");
-    // console.log(request.body); 
-
-    const {name} = request.body;
-    // const db = dbService.getDbServiceInstance();
-
-    const result = db.insertNewName(name);
- 
-    // note that result is a promise
-    result 
-    .then(data => response.json({data: data})) // return the newly added row to frontend, which will show it
-   // .then(data => console.log({data: data})) // debug first before return by response
-   .catch(err => console.log(err));
-});
-
-app.get('/getAll', (request, response) => {
-    
-    // const db = dbService.getDbServiceInstance();
-
-    
-    const result =  db.getAllData(); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-
-app.get('/search/:name', (request, response) => { // we can debug by URL
-    
-    const {name} = request.params;
-    
-    console.log(name);
-
-    // const db = dbService.getDbServiceInstance();
-
-    let result;
-    if(name === "all") // in case we want to search all
-       result = db.getAllData()
-    else 
-       result =  db.searchByName(name); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-
-// update
 app.patch('/update', 
      (request, response) => {
           console.log("app: update is called");
@@ -237,6 +187,46 @@ app.get('/testdb', (request, response) => {
     .then(data => response.json({data: data}))
     .catch(err => console.log(err));
 });
+
+
+app.get('/search/:first_name', (request, response) => { // we can debug by URL
+    
+    const {first_name} = request.params;
+    
+    console.log(first_name);
+
+    // const db = dbService.getDbServiceInstance();
+
+    let result;
+    if(first_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByFirstName(first_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
+app.get('/search/:last_name', (request, response) => { // we can debug by URL
+    
+    const {last_name} = request.params;
+    
+    console.log(last_name);
+
+    // const db = dbService.getDbServiceInstance();
+
+    let result;
+    if(last_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByLastName(last_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
 
 
 // configures node js application on port in .env
