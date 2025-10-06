@@ -5,7 +5,7 @@ create table names (
     primary key (id)  
 );
 
-create table accounts (
+CREATE TABLE IF NOT EXISTS accounts (
     id int not null auto_increment,
     first_name varchar(20),
     last_name varchar(20),
