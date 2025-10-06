@@ -9,7 +9,7 @@ create table accounts (
     id int not null auto_increment,
     first_name varchar(20),
     last_name varchar(20),
-    email varchar(30),
+    username varchar(30),
     password varchar(100),
     date_created datetime,
     last_login datetime default null,

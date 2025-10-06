@@ -64,12 +64,12 @@ class DbService{
         return instance ? instance: (instance = new DbService());
     }
 
-   // checks if an email already exists inside the database to prevent duplicates
-   async emailExists(email) {
+   // checks if an user already exists inside the database to prevent duplicates
+   async userExists(user) {
       try {
          const exists = await new Promise((resolve, reject) => {
-               const query = "SELECT COUNT(*) AS count FROM accounts WHERE email = ?";
-               this.connection.query(query, [email], (err, result) => {
+               const query = "SELECT COUNT(*) AS count FROM accounts WHERE username = ?";
+               this.connection.query(query, [user], (err, result) => {
                   if (err) reject(err);
                   else resolve(result[0].count > 0);
                });
@@ -82,13 +82,13 @@ class DbService{
    }
 
    // inserts new registered accounts into database
-   async newRegistration(firstName, lastName, age, salary, email, password){
+   async newRegistration(firstName, lastName, age, salary, user, password){
       try{
             const creationDate = new Date();
             const insertId = await new Promise((resolve, reject)=>{
-               const query = "INSERT INTO accounts (first_name, last_name, age, salary, email, password, date_created)" 
+               const query = "INSERT INTO accounts (first_name, last_name, age, salary, username, password, date_created)" 
                  + " VALUES (?, ?, ?, ?, ?, ?, ?);";
-               this.connection.query(query, [firstName, lastName, age, salary, email, password, creationDate], (err, result) => {
+               this.connection.query(query, [firstName, lastName, age, salary, user, password, creationDate], (err, result) => {
                   if(err) reject(new Error(err.message));
                   else resolve(result.insertId);
                });
@@ -100,7 +100,7 @@ class DbService{
                lastName,
                age,
                salary,
-               email,
+               user,
                creationDate
             }
       } catch(error){
@@ -108,11 +108,11 @@ class DbService{
       }
    }
 
-   async findUserByEmail(email) {
+   async findUser(user) {
       try {
          return await new Promise((resolve, reject) => {
-               const query = "SELECT * FROM accounts WHERE email = ?";
-               this.connection.query(query, [email], (err, results) => {
+               const query = "SELECT * FROM accounts WHERE username = ?";
+               this.connection.query(query, [user], (err, results) => {
                   if (err) reject(err);
                   else resolve(results.length > 0 ? results[0] : null);
                });

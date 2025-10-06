@@ -10,6 +10,21 @@
 <body>
     <main>
 
+        <div class="register-user-container">
+            <label for="register-user-input">Username</label>
+            <p id="user-use-error" style="color:red" hidden="hidden">
+                Username already in use
+            </p>
+            <p id="user-valid-error" style="color:red" hidden="hidden">
+                Please enter a valid username
+            </p>
+            <input type="text" 
+                id="register-user-input" 
+                placeholder="Enter your user"
+                name="register-user-input"
+            >
+        </div>
+
         <div class="register-first-name-container">
             <label for="register-first-name-input">First Name</label>
             <input type="text" 
@@ -43,21 +58,6 @@
                 id="register-salary-input" 
                 placeholder="Enter your salary"
                 name="register-salary-input"
-            >
-        </div>
-
-        <div class="register-email-container">
-            <label for="register-email-input">Email (Username)</label>
-            <p id="email-use-error" style="color:red" hidden="hidden">
-                Email already in use
-            </p>
-            <p id="email-valid-error" style="color:red" hidden="hidden">
-                Please enter a valid email
-            </p>
-            <input type="text" 
-                id="register-email-input" 
-                placeholder="Enter your email"
-                name="register-email-input"
             >
         </div>
 

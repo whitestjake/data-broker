@@ -36,11 +36,11 @@ function isValidEmail(email) {
 
 // post request for server to assist in logging into a valid account
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     try {
         // const db = DbService.getDbServiceInstance();
-        const user = await db.findUserByEmail(email);
+        const user = await db.findUser(username);
 
         if (!user) {
             return res.status(400).json({ success: false, error: "User not found" });
@@ -67,27 +67,24 @@ app.post('/register', async (request, response) => {
 
     try {
         // parses the JSON recieved from the frontend
-        let {firstName, lastName, age, salary, email, password, confirm} = request.body;
+        let {firstName, lastName, age, salary, user, password, confirm} = request.body;
 
         firstName = firstName.toLowerCase().trim();
         lastName = lastName.toLowerCase().trim();
-        email = email.toLowerCase().trim();
+        user = user.toLowerCase().trim();
 
         // checks that all fields contain values
-        if (!firstName || !lastName || !email || !password || !confirm || !age || !salary) {
+        if (!firstName || !lastName || !user || !password || !confirm || !age || !salary) {
                 return response.status(400).json({ error: 'All fields are required' });
             }
 
         // verifies if the password and confirm field match
         if (password !== confirm) return response.status(400).json({error: "Passwords do not match"});
 
-        // calls isValidEmail to verify proper email format
-        if (!isValidEmail(email)) return response.status(400).json({error: 'Invalid email format'});
+        const userTaken = await db.userExists(user); // calls userExists from dbService
 
-        const emailTaken = await db.emailExists(email); // calls emailExists from dbService
-
-        // checks if email in field already exists in database and returns error if true
-        if (emailTaken) return response.status(400).json({error: 'Email already registered'})
+        // checks if user in field already exists in database and returns error if true
+        if (userTaken) return response.status(400).json({error: 'user already registered'})
         
         // we decided to not add a minimum password length or require specific characters
         // but we are hashing password here
@@ -96,7 +93,7 @@ app.post('/register', async (request, response) => {
 
         // passes the values from the json into the newRegistration function from
         // our database service file to submit it to the database
-        const registered = await db.newRegistration(firstName, lastName, age, salary, email, hashPassword);
+        const registered = await db.newRegistration(firstName, lastName, age, salary, user, hashPassword);
 
         response.status(201).json({data: registered})
 
