@@ -28,11 +28,11 @@ loginBtn.onclick = function () {
             console.log("Login successful:", data);
             // redirect to homepage after successful login
             setTimeout(() => {
-                window.location.href = "/data-broker/frontend/home/home.html";
+                window.location.href = "/views/home.html";
             }, 1000);
         } else {
             console.error("Login failed:", data.error);
             // show error on page
         }
-    });
+    }); 
 }

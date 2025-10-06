@@ -100,7 +100,7 @@ registerBtn.onclick = function() {
             console.log("Registration Successful");
             document.getElementById('register-success').removeAttribute('hidden');
             setTimeout(() => {
-                window.location.href = "http://localhost/data-broker/frontend/home/home.html";
+                window.location.href = "/views/home.html";
             }, 1000);
         }
       });

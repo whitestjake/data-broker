@@ -4,9 +4,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import DbService from './dbService.js';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import { fileURLToPath} from "url";
+import DbService from './dbService.js';
 dotenv.config()
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const db = DbService.getDbServiceInstance();
@@ -14,6 +19,13 @@ const db = DbService.getDbServiceInstance();
 app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({extended: false}));
+
+app.use("/static", express.static(path.join(__dirname, "..", "Frontend", "static")));
+app.use("/views", express.static(path.join(__dirname, "..", "Frontend", "views")));
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "index.html"));
+});
 
 // function to call when needing to verify email format
 function isValidEmail(email) {
@@ -229,6 +241,13 @@ app.get('/testdb', (request, response) => {
 });
 
 
+// configures node js application on port in .env
+app.listen(process.env.PORT || 5050, 
+    () => {
+        console.log(`Server running on http://localhost:${process.env.PORT}/`)
+    }
+);
+
 // set up the web server listener
 // if we use .env to configure
 /*
@@ -240,8 +259,8 @@ app.listen(process.env.PORT,
 */
 
 // if we configure here directly
-app.listen(5050, 
-    () => {
-        console.log("I am listening on the fixed port 5050.")
-    }
-);
+// app.listen(5050, 
+//     () => {
+//         console.log("I am listening on the fixed port 5050.")
+//     }
+// );
