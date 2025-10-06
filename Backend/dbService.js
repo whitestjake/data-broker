@@ -64,23 +64,6 @@ class DbService{
         return instance ? instance: (instance = new DbService());
     }
 
-   // checks if an user already exists inside the database to prevent duplicates
-   async userExists(user) {
-      try {
-         const exists = await new Promise((resolve, reject) => {
-               const query = "SELECT COUNT(*) AS count FROM accounts WHERE username = ?";
-               this.connection.query(query, [user], (err, result) => {
-                  if (err) reject(err);
-                  else resolve(result[0].count > 0);
-               });
-         });
-         return exists;
-      } catch (err) {
-         console.error(err);
-         throw err;
-      }
-   }
-
    // inserts new registered accounts into database
    async newRegistration(firstName, lastName, age, salary, user, password){
       try{
@@ -105,6 +88,23 @@ class DbService{
             }
       } catch(error){
          console.log(error);
+      }
+   }
+
+   // checks if an user already exists inside the database to prevent duplicates
+   async userExists(user) {
+      try {
+         const exists = await new Promise((resolve, reject) => {
+               const query = "SELECT COUNT(*) AS count FROM accounts WHERE username = ?";
+               this.connection.query(query, [user], (err, result) => {
+                  if (err) reject(err);
+                  else resolve(result[0].count > 0);
+               });
+         });
+         return exists;
+      } catch (err) {
+         console.error(err);
+         throw err;
       }
    }
 

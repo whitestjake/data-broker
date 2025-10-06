@@ -6,7 +6,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import path from 'path';
-import { fileURLToPath} from "url";
+import { fileURLToPath } from "url";
 import DbService from './dbService.js';
 dotenv.config()
 
@@ -36,23 +36,24 @@ function isValidEmail(email) {
 
 // post request for server to assist in logging into a valid account
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { user, password } = req.body;
 
     try {
         // const db = DbService.getDbServiceInstance();
-        const user = await db.findUser(username);
+        const userRecord = await db.findUser(user);
 
-        if (!user) {
+        if (!userRecord) {
             return res.status(400).json({ success: false, error: "User not found" });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, userRecord.password);
         if (!isMatch) {
             return res.status(400).json({ success: false, error: "Invalid password" });
         }
 
         // success
-        return res.json({ success: true, message: "Login successful", user: { id: user.id, email: user.email } });
+        return res.json({ success: true, message: "Login successful", username: userRecord.username });
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ success: false, error: "Server error" });
