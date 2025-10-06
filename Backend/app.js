@@ -258,7 +258,7 @@ app.get('/search/:first_name', (request, response) => { // we can debug by URL
     if(first_name === "all") // in case we want to search all
        result = db.getAllData()
     else 
-       result =  db.searchByName(first_name); // call a DB function
+       result =  db.searchByFirstName(first_name); // call a DB function
 
     result
     .then(data => response.json({data: data}))
@@ -277,7 +277,7 @@ app.get('/search/:last_name', (request, response) => { // we can debug by URL
     if(last_name === "all") // in case we want to search all
        result = db.getAllData()
     else 
-       result =  db.searchByName(last_name); // call a DB function
+       result =  db.searchByLastName(last_name); // call a DB function
 
     result
     .then(data => response.json({data: data}))
