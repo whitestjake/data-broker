@@ -33,12 +33,12 @@ export function initRegisterForm(container) {
         const lastNameInput = formContainer.querySelector("#register-last-name-input");
         const ageInput = formContainer.querySelector("#register-age-input");
         const salaryInput = formContainer.querySelector("#register-salary-input");
-        const emailInput = formContainer.querySelector("#register-email-input");
+        const userInput = formContainer.querySelector("#register-user-input");
         const passwordInput = formContainer.querySelector("#register-password-input");
         const confirmInput = formContainer.querySelector("#register-confirm-password-input");
 
-        if (!firstNameInput || !lastNameInput || !ageInput || !salaryInput || !emailInput || !passwordInput || !confirmInput) {
-            console.warn("Register inputs not found!");
+        if (!firstNameInput || !lastNameInput || !ageInput || !salaryInput || !userInput || !passwordInput || !confirmInput) {
+            console.warn("Register inputs not found");
             return;
         }
 
@@ -46,16 +46,11 @@ export function initRegisterForm(container) {
         const lastName = lastNameInput.value.trim();
         const age = parseInt(ageInput.value, 10);
         const salary = parseFloat(salaryInput.value.replace(/[$,]/g, ''));
-        const email = emailInput.value.trim();
+        const user = userInput.value.trim();
         const password = passwordInput.value;
         const confirm = confirmInput.value;
 
         // Validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            formContainer.querySelector('#email-valid-error')?.removeAttribute('hidden');
-            return;
-        }
 
         if (password !== confirm) {
             formContainer.querySelector('#password-error')?.removeAttribute('hidden');
@@ -70,7 +65,7 @@ export function initRegisterForm(container) {
         lastNameInput.value = '';
         ageInput.value = '';
         salaryInput.value = '';
-        emailInput.value = '';
+        userInput.value = '';
         passwordInput.value = '';
         confirmInput.value = '';
 
@@ -78,12 +73,12 @@ export function initRegisterForm(container) {
         fetch("http://localhost:5050/register", {
             headers: { 'Content-type': 'application/json' },
             method: 'POST',
-            body: JSON.stringify({ firstName, lastName, age, salary, email, password, confirm })
+            body: JSON.stringify({ firstName, lastName, age, salary, user, password, confirm })
         })
         .then(res => res.json())
         .then(data => {
             if (data.error) {
-                formContainer.querySelector("#email-use-error")?.removeAttribute('hidden');
+                formContainer.querySelector("#user-use-error")?.removeAttribute('hidden');
                 console.log('Error: ' + data.error);
             } else {
                 formContainer.querySelector('#register-success')?.removeAttribute('hidden');

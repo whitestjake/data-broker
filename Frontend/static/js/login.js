@@ -13,23 +13,16 @@ export function initLoginForm(container) {
         // Scope search to the closest parent div (or container itself)
         const formContainer = e.target.closest('div') || container;
 
-        const emailInput = formContainer.querySelector("#login-username-input");
+        const userInput = formContainer.querySelector("#login-username-input");
         const passwordInput = formContainer.querySelector("#login-password-input");
 
-        if (!emailInput || !passwordInput) {
+        if (!userInput || !passwordInput) {
             console.warn("Login inputs not found!");
             return;
         }
 
-        const email = emailInput.value.trim();
+        const user = userInput.value.trim();
         const password = passwordInput.value;
-
-        // Basic email validation
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!regex.test(email)) {
-            formContainer.querySelector('#login-email-error')?.removeAttribute('hidden');
-            return;
-        }
 
         if (!password) {
             formContainer.querySelector('#login-password-error')?.removeAttribute('hidden');
@@ -40,7 +33,7 @@ export function initLoginForm(container) {
         fetch("http://localhost:5050/login", {
             headers: { 'Content-type': 'application/json' },
             method: 'POST',
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ user, password })
         })
         .then(res => res.json())
         .then(data => {
