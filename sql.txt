@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS dse6100_project1;
+USE dse6100_project1;
+
 create table names (
     id int not null auto_increment,
     name varchar(20),
