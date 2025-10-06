@@ -1,7 +1,6 @@
 
 
 
-// login.js
 
 export function initLoginForm(container) {
     if (!container) return;
@@ -64,8 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initLoginForm(container);
     }
 });
-
-
 
 
 
