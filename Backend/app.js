@@ -51,6 +51,11 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ success: false, error: "Invalid password" });
         }
 
+        /*
+        update the user's last login timestamp in the database
+        */
+        await db.updateLastLoginDate(user.id);
+
         // success
         return res.json({ success: true, message: "Login successful", user: { id: user.id, email: user.email } });
     } catch (err) {
@@ -163,24 +168,24 @@ app.get('/getAll', (request, response) => {
 });
 
 
-app.get('/search/:name', (request, response) => { // we can debug by URL
+// app.get('/search/:name', (request, response) => { // we can debug by URL
     
-    const {name} = request.params;
+//     const {name} = request.params;
     
-    console.log(name);
+//     console.log(name);
 
-    // const db = dbService.getDbServiceInstance();
+//     // const db = dbService.getDbServiceInstance();
 
-    let result;
-    if(name === "all") // in case we want to search all
-       result = db.getAllData()
-    else 
-       result =  db.searchByName(name); // call a DB function
+//     let result;
+//     if(name === "all") // in case we want to search all
+//        result = db.getAllData()
+//     else 
+//        result =  db.searchByName(name); // call a DB function
 
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
+//     result
+//     .then(data => response.json({data: data}))
+//     .catch(err => console.log(err));
+// });
 
 
 // update
@@ -240,6 +245,44 @@ app.get('/testdb', (request, response) => {
     .catch(err => console.log(err));
 });
 
+
+app.get('/search/:first_name', (request, response) => { // we can debug by URL
+    
+    const {first_name} = request.params;
+    
+    console.log(first_name);
+
+    // const db = dbService.getDbServiceInstance();
+
+    let result;
+    if(first_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByName(first_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
+app.get('/search/:last_name', (request, response) => { // we can debug by URL
+    
+    const {last_name} = request.params;
+    
+    console.log(last_name);
+
+    // const db = dbService.getDbServiceInstance();
+
+    let result;
+    if(last_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByName(last_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
 
 // configures node js application on port in .env
 app.listen(process.env.PORT || 5050, 
