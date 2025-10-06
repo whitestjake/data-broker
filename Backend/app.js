@@ -4,8 +4,14 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+import path from 'path';
+import { fileURLToPath} from "url";
 import DbService from './dbService.js';
 dotenv.config()
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const db = DbService.getDbServiceInstance();
@@ -14,6 +20,13 @@ app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({extended: false}));
 
+app.use("/static", express.static(path.join(__dirname, "..", "Frontend", "static")));
+app.use("/views", express.static(path.join(__dirname, "..", "Frontend", "views")));
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "index.html"));
+});
+
 // function to call when needing to verify email format
 function isValidEmail(email) {
     // simple regex for email validation
@@ -21,21 +34,29 @@ function isValidEmail(email) {
     return regex.test(email);
 }
 
-// create
-app.post('/insert', (request, response) => {
-    console.log("app: insert a row.");
-    // console.log(request.body); 
+// post request for server to assist in logging into a valid account
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
 
-    const {name} = request.body;
-    // const db = dbService.getDbServiceInstance();
+    try {
+        // const db = DbService.getDbServiceInstance();
+        const user = await db.findUserByEmail(email);
 
-    const result = db.insertNewName(name);
- 
-    // note that result is a promise
-    result 
-    .then(data => response.json({data: data})) // return the newly added row to frontend, which will show it
-   // .then(data => console.log({data: data})) // debug first before return by response
-   .catch(err => console.log(err));
+        if (!user) {
+            return res.status(400).json({ success: false, error: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, error: "Invalid password" });
+        }
+
+        // success
+        return res.json({ success: true, message: "Login successful", user: { id: user.id, email: user.email } });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, error: "Server error" });
+    }
 });
 
 // this is a post request which sends the data from the registration page
@@ -46,14 +67,14 @@ app.post('/register', async (request, response) => {
 
     try {
         // parses the JSON recieved from the frontend
-        const {firstName, lastName, email, password, confirm} = request.body;
+        let {firstName, lastName, age, salary, email, password, confirm} = request.body;
 
-        firstName = firstName.toLowerCase();
-        lastName = lastName.toLowerCase();
-        email = email.toLowerCase();
+        firstName = firstName.toLowerCase().trim();
+        lastName = lastName.toLowerCase().trim();
+        email = email.toLowerCase().trim();
 
         // checks that all fields contain values
-        if (!firstName || !lastName || !email || !password || !confirm) {
+        if (!firstName || !lastName || !email || !password || !confirm || !age || !salary) {
                 return response.status(400).json({ error: 'All fields are required' });
             }
 
@@ -69,16 +90,19 @@ app.post('/register', async (request, response) => {
         if (emailTaken) return response.status(400).json({error: 'Email already registered'})
         
         // we decided to not add a minimum password length or require specific characters
+        // but we are hashing password here
+        const saltRounds = 10;
+        const hashPassword = await bcrypt.hash(password, saltRounds);
 
         // passes the values from the json into the newRegistration function from
         // our database service file to submit it to the database
-        const registered = await db.newRegistration(firstName, lastName, email, password);
+        const registered = await db.newRegistration(firstName, lastName, age, salary, email, hashPassword);
 
         response.status(201).json({data: registered})
 
     } catch (error) {
-        console.error('Registration Error: error');
-        response.status(500).json({error: "Server Error"});
+        console.error('Registration Error: ' + error);
+        response.status(500).json({error: "Registration Error"});
     }
 });
 
@@ -108,6 +132,24 @@ app.post('/register', async (request, response) => {
 
 
 // read 
+
+// create
+app.post('/insert', (request, response) => {
+    console.log("app: insert a row.");
+    // console.log(request.body); 
+
+    const {name} = request.body;
+    // const db = dbService.getDbServiceInstance();
+
+    const result = db.insertNewName(name);
+ 
+    // note that result is a promise
+    result 
+    .then(data => response.json({data: data})) // return the newly added row to frontend, which will show it
+   // .then(data => console.log({data: data})) // debug first before return by response
+   .catch(err => console.log(err));
+});
+
 app.get('/getAll', (request, response) => {
     
     // const db = dbService.getDbServiceInstance();
@@ -199,6 +241,13 @@ app.get('/testdb', (request, response) => {
 });
 
 
+// configures node js application on port in .env
+app.listen(process.env.PORT || 5050, 
+    () => {
+        console.log(`Server running on http://localhost:${process.env.PORT}/`)
+    }
+);
+
 // set up the web server listener
 // if we use .env to configure
 /*
@@ -210,8 +259,8 @@ app.listen(process.env.PORT,
 */
 
 // if we configure here directly
-app.listen(5050, 
-    () => {
-        console.log("I am listening on the fixed port 5050.")
-    }
-);
+// app.listen(5050, 
+//     () => {
+//         console.log("I am listening on the fixed port 5050.")
+//     }
+// );

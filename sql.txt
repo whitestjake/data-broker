@@ -4,18 +4,16 @@ USE dse6100_project1;
 CREATE TABLE IF NOT EXISTS names (
     id int not null auto_increment,
     name varchar(20),
+    date_added Date,
     primary key (id)
-);
+    
+)
 
-CREATE TABLE IF NOT EXISTS accounts (
+create table accounts (
     id int not null auto_increment,
     first_name varchar(20),
     last_name varchar(20),
-    email varchar(30) unique, 
-    password varchar(100),
-    salary decimal(10,2),
-    age int,
-    registration_date datetime default current_timestamp,
-    last_login_date datetime null,
+    email varchar(30),
+    password varchar,
     primary key (id)
 );
