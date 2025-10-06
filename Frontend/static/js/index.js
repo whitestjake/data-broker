@@ -1,43 +1,49 @@
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
+import { initLoginForm } from '/static/js/login.js';
+import { initRegisterForm } from '/static/js/register.js';
 
-  /**
-   * Load a view into a container dynamically
-   * @param {string} viewName - name of the view (e.g., "login", "register", "home")
-   * @param {string} containerId - id of the div to inject HTML into
-   */
-  function loadView(viewName, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) {
-      console.error(`Container #${containerId} not found`);
-      return;
+document.addEventListener("DOMContentLoaded", async () => {
+
+    // Generic function to load a view into a container
+    async function loadView(viewName, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+            console.error(`Container #${containerId} not found`);
+            return;
+        }
+
+        try {
+            // Fetch the HTML for the view
+            const response = await fetch(`/views/${viewName}.html`);
+            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+            const html = await response.text();
+
+            // Inject the HTML into the container
+            container.innerHTML = html;
+
+            // Initialize the form AFTER HTML injection
+            switch (viewName) {
+                case "login":
+                    initLoginForm(container);
+                    break;
+                case "register":
+                    initRegisterForm(container);
+                    break;
+                default:
+                    console.warn(`No initializer for view: ${viewName}`);
+            }
+
+        } catch (err) {
+            console.error(`Error loading ${viewName}:`, err);
+        }
     }
 
-    // Fetch the HTML
-    fetch(`./views/${viewName}.html`)
-      .then(response => response.text())
-      .then(html => {
-        container.innerHTML = html;
-
-        // Inject CSS
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = `/static/css/${viewName}.css`;
-        document.head.appendChild(link);
-
-        // Inject JS
-        const script = document.createElement("script");
-        script.src = `/static/js/${viewName}.js`;
-        document.body.appendChild(script);
-      })
-      .catch(err => console.error(`Error loading ${viewName} page:`, err));
-  }
-
-  // load different pages into their respective container
-  loadView("login", "login-container");
-  loadView("register", "register-container");
-
-
+    // Load login and register views
+    loadView("login", "login-container");
+    loadView("register", "register-container");
 });
+
+
+

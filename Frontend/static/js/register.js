@@ -1,112 +1,109 @@
 
 
 
-// this code is for auto-formatting the input for salary for a cleaner look
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-format salary input
-    const currencyInput = document.getElementById('register-salary-input');
+export function initRegisterForm(container) {
+    if (!container) return;
 
-    if (currencyInput) {
-        currencyInput.addEventListener('input', function(e) {
-            let value = e.target.value;
-            value = value.replace(/[^0-9.]/g, ''); // Remove non-numeric characters except decimal
-            const parts = value.split('.');
-            let integerPart = parts[0];
-            let decimalPart = parts.length > 1 ? '.' + parts[1].substring(0, 2) : ''; // Limit to 2 decimals
+    // Salary input auto-formatting (currency)
+    container.addEventListener('input', (e) => {
+        if (e.target.id !== 'register-salary-input') return;
 
-            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Add commas
-            e.target.value = '$' + integerPart + decimalPart;
-        });
+        let value = e.target.value;
+        value = value.replace(/[^0-9.]/g, '');
+        const parts = value.split('.');
+        let integerPart = parts[0];
+        let decimalPart = parts.length > 1 ? '.' + parts[1].substring(0, 2) : '';
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        e.target.value = '$' + integerPart + decimalPart;
+    });
 
-        currencyInput.addEventListener('blur', function(e) {
-            if (e.target.value === '$' || e.target.value === '') {
-                e.target.value = '';
+    container.addEventListener('blur', (e) => {
+        if (e.target.id === 'register-salary-input' && (e.target.value === '$' || e.target.value === '')) {
+            e.target.value = '';
+        }
+    }, true); // useCapture=true for blur
+
+    // Event delegation for register button
+    container.addEventListener('click', (e) => {
+        if (e.target.id !== 'register-button') return;
+
+        const formContainer = e.target.closest('div') || container;
+
+        const firstNameInput = formContainer.querySelector("#register-first-name-input");
+        const lastNameInput = formContainer.querySelector("#register-last-name-input");
+        const ageInput = formContainer.querySelector("#register-age-input");
+        const salaryInput = formContainer.querySelector("#register-salary-input");
+        const emailInput = formContainer.querySelector("#register-email-input");
+        const passwordInput = formContainer.querySelector("#register-password-input");
+        const confirmInput = formContainer.querySelector("#register-confirm-password-input");
+
+        if (!firstNameInput || !lastNameInput || !ageInput || !salaryInput || !emailInput || !passwordInput || !confirmInput) {
+            console.warn("Register inputs not found!");
+            return;
+        }
+
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const age = parseInt(ageInput.value, 10);
+        const salary = parseFloat(salaryInput.value.replace(/[$,]/g, ''));
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirm = confirmInput.value;
+
+        // Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            formContainer.querySelector('#email-valid-error')?.removeAttribute('hidden');
+            return;
+        }
+
+        if (password !== confirm) {
+            formContainer.querySelector('#password-error')?.removeAttribute('hidden');
+            return;
+        }
+
+        if (isNaN(age) || age < 0) return;
+        if (isNaN(salary) || salary < 0) return;
+
+        // Clear inputs
+        firstNameInput.value = '';
+        lastNameInput.value = '';
+        ageInput.value = '';
+        salaryInput.value = '';
+        emailInput.value = '';
+        passwordInput.value = '';
+        confirmInput.value = '';
+
+        // Send registration request
+        fetch("http://localhost:5050/register", {
+            headers: { 'Content-type': 'application/json' },
+            method: 'POST',
+            body: JSON.stringify({ firstName, lastName, age, salary, email, password, confirm })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                formContainer.querySelector("#email-use-error")?.removeAttribute('hidden');
+                console.log('Error: ' + data.error);
+            } else {
+                formContainer.querySelector('#register-success')?.removeAttribute('hidden');
+                console.log("Registration Successful");
+                setTimeout(() => { window.location.href = "/views/home.html"; }, 1000);
             }
-        });
-    }
+        })
+        .catch(err => console.error("Registration request failed:", err));
+    });
+}
 
-    // Register button logic
-    const registerBtn = document.getElementById('register-button');
-    if (registerBtn) {
-        registerBtn.onclick = function() {
-            const firstNameInput = document.getElementById("register-first-name-input");
-            const lastNameInput = document.getElementById("register-last-name-input");
-            const ageInput = document.getElementById("register-age-input");
-            const salaryInput = document.getElementById("register-salary-input");
-            const emailInput = document.getElementById("register-email-input");
-            const passwordInput = document.getElementById("register-password-input");
-            const confirmInput = document.getElementById("register-confirm-password-input");
-
-            const firstName = firstNameInput.value;
-            const lastName = lastNameInput.value;
-            const age = ageInput.value;
-            const salary = salaryInput.value;
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            const confirm = confirmInput.value;
-
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regex.test(email)) {
-                console.log("Invalid email format");
-                document.getElementById('email-valid-error').removeAttribute('hidden');
-                return;
-            }
-
-            if (password !== confirm) {
-                console.log("Passwords do not match");
-                document.getElementById('password-error').removeAttribute('hidden');
-                return;
-            }
-
-            if (age < 0) {
-                console.log('age input is invalid');
-                return;
-            }
-
-            if (salary < 0) {
-                console.log('salary input is invalid');
-                return;
-            }
-
-            firstNameInput.value = '';
-            lastNameInput.value = '';
-            ageInput.value = '';
-            salaryInput.value = '';
-            emailInput.value = '';
-            passwordInput.value = '';
-            confirmInput.value = '';
-
-            fetch("http://localhost:5050/register", {
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify({
-                    firstName,
-                    lastName,
-                    age,
-                    salary,
-                    email,
-                    password,
-                    confirm
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.log('Error: ' + data.error);
-                    document.getElementById("email-use-error").removeAttribute('hidden');
-                } else {
-                    console.log("Registration Successful");
-                    document.getElementById('register-success').removeAttribute('hidden');
-                    setTimeout(() => {
-                        window.location.href = "/views/home.html";
-                    }, 1000);
-                }
-            });
-        };
+// Auto-init if register.html is loaded directly
+document.addEventListener('DOMContentLoaded', () => {
+    const registerButton = document.getElementById('register-button');
+    if (registerButton) {
+        const container = document.getElementById('register-container') || document.body;
+        initRegisterForm(container);
     }
 });
+
 
 
 

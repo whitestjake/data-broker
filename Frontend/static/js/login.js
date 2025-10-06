@@ -1,38 +1,71 @@
 
 
 
+// login.js
 
+export function initLoginForm(container) {
+    if (!container) return;
 
-// assigns login button to a variable
-const loginBtn = document.getElementById('login-button');
+    // Event delegation: listen for clicks anywhere inside the container
+    container.addEventListener('click', (e) => {
+        // Only handle clicks on the login button
+        if (e.target.id !== 'login-button') return;
 
-// this following code runs after clicking the login button
-loginBtn.onclick = function () {
+        // Scope search to the closest parent div (or container itself)
+        const formContainer = e.target.closest('div') || container;
 
-    // extracts the value from inside the username and password input
-    const emailInput = document.getElementById("login-username-input");
-    const passwordInput = document.getElementById("login-password-input");
+        const emailInput = formContainer.querySelector("#login-username-input");
+        const passwordInput = formContainer.querySelector("#login-password-input");
 
-    const email = emailInput.value.toLowerCase().trim(); // lowercase for consistency
-    const password = passwordInput.value;
-
-    // calls backend for login functionality to access database
-    fetch("http://localhost:5050/login", {
-        headers: { 'Content-type': 'application/json' },
-        method: 'POST',
-        body: JSON.stringify({ email, password })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log("Login successful:", data);
-            // redirect to homepage after successful login
-            setTimeout(() => {
-                window.location.href = "/views/home.html";
-            }, 1000);
-        } else {
-            console.error("Login failed:", data.error);
-            // show error on page
+        if (!emailInput || !passwordInput) {
+            console.warn("Login inputs not found!");
+            return;
         }
-    }); 
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // Basic email validation
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regex.test(email)) {
+            formContainer.querySelector('#login-email-error')?.removeAttribute('hidden');
+            return;
+        }
+
+        if (!password) {
+            formContainer.querySelector('#login-password-error')?.removeAttribute('hidden');
+            return;
+        }
+
+        // Send login request
+        fetch("http://localhost:5050/login", {
+            headers: { 'Content-type': 'application/json' },
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                formContainer.querySelector('#login-error')?.removeAttribute('hidden');
+                console.log('Login Error:', data.error);
+            } else {
+                console.log("Login Successful");
+                window.location.href = "/views/home.html";
+            }
+        })
+        .catch(err => console.error("Login request failed:", err));
+    });
 }
+
+// Auto-initialzie for direct page load
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('login-container') || document.body;
+    if (document.getElementById('login-button')) {
+        initLoginForm(container);
+    }
+});
+
+
+
+
+
