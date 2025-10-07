@@ -46,7 +46,7 @@ export function initLoginForm(container) {
                     firstName: data.firstName
                 }));
 
-                window.location.href = "/views/home.html";
+                window.location.href = "/home.html";
             }
         })
         .catch(err => console.error("Login request failed:", err));

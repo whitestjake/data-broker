@@ -90,7 +90,7 @@ export function initRegisterForm(container) {
                     firstName: data.data.firstName
                 }));
 
-                setTimeout(() => { window.location.href = "/views/home.html"; }, 1000);
+                setTimeout(() => { window.location.href = "/home.html"; }, 1000);
             }
         })
         .catch(err => console.error("Registration request failed:", err));
