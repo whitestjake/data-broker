@@ -23,7 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             const res = await fetch('http://localhost:5050/accounts'); // Make sure you have this route
             const data = await res.json();
-            allUsers = data.data; // assuming backend sends { data: [...] }
+            allUsers = data.data; 
+            console.log(allUsers);
             renderTable(allUsers);
         } catch (err) {
             console.error('Error fetching users:', err);
@@ -55,8 +56,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${capitalize(user.last_name)}</td>
                 <td>${user.age}</td>
                 <td>${formatCurrency(user.salary)}</td>
-                <td>${user.date_created ? new Date(user.date_created).toISOString().split('T')[0] : ''}</td>
-                <td>${user.last_login ? new Date(user.last_login).toISOString().split('T')[0] : 'Never'}</td>
+                <td>${user.registration_date ? new Date(user.registration_date).toISOString().split('T')[0]: ''}</td>
+                <td>${user.last_login_date ? new Date(user.last_login_date).toISOString().split('T')[0] : 'Never'}</td>
             `;
             tableBody.appendChild(tr);
         });
@@ -98,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // Registration date filter
             if (regDateInput) {
-                const regDate = new Date(user.date_created).toISOString().split('T')[0];
+                const regDate = user.registration_date.split('T')[0];
                 if (!regDate.includes(regDateInput)) return false;
             }
 

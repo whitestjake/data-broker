@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Load login and register views
     loadView("login", "login-container");
-    loadView("register", "register-container");
+    // loadView("register", "register-container");
 });
 
 

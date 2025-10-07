@@ -6,6 +6,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: whitesmoke;
 }
 
 #navbar-container {
@@ -21,7 +22,8 @@ main {
     min-height: 80vh;
     width: 50vw;
     background-color: #f9f9f9;
-    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    box-shadow: 0rem 0.25rem 0.5rem rgba(0,0,0,0.1);
+    border: 0.1rem solid #ccc;
     border-radius: 1rem;
     margin-top: 5vh;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -29,7 +31,7 @@ main {
 
 .registration-message {
     text-align: center;
-    margin-bottom: 0.5rem; /* adds space between message and form */
+    margin-bottom: 0.5rem; 
 }
 
 .registration-message h3 {
@@ -48,10 +50,11 @@ main {
 #register-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;               /* space between input sections */
-    width: 80%;              /* relative width */
-    max-width: 400px;        /* keeps it reasonable on large screens */
+    gap: 1rem;               
+    width: 80%;              
+    max-width: 400px;        
     box-sizing: border-box;
+    margin-bottom: 0.5em;
 }
 
 /* Each label above input */
@@ -100,3 +103,5 @@ main {
     margin: 0.25rem 0 0;
     font-size: 0.875rem;
 }
+
+

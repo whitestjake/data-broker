@@ -173,7 +173,7 @@ class DbService{
             );
         
             // console.log("dbServices.js: search result:");
-            // console.log(response);  // for debugging to see the result of select
+            console.log(response);  // for debugging to see the result of select
             return response;
 
         }  catch(error){

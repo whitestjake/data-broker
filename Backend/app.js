@@ -114,6 +114,7 @@ app.post('/register', async (request, response) => {
 app.get('/accounts', async (req, res) => {
     try {
         const data = await db.getAccountData();
+        // console.log(data)
         res.json({ data });
     } catch (err) {
         console.error(err);

@@ -2,7 +2,7 @@
 
 /* Primary login container */
 #primary-login-container {
-    max-width: 20rem;          /* ~400px relative */
+    max-width: 25rem;          /* ~400px relative */
     width: 90%;                /* responsive width */
     padding: 1rem;
     border: 0.1rem solid #ccc; /* relative border */
