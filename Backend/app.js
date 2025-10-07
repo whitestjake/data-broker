@@ -51,7 +51,7 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ success: false, error: "Invalid password" });
         }
 
-        await db.updateLastLoginDate(user.id);
+        await db.updateLastLoginDate(userRecord.id);
 
         // success
         return res.json({ success: true, message: "Login successful", username: userRecord.username });
