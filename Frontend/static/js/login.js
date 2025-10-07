@@ -1,8 +1,10 @@
 
-
+import { loadNavbar } from '/static/js/nav.js';
 
 export function initLoginForm(container) {
     if (!container) return;
+
+    loadNavbar();
 
     container.addEventListener('click', (e) => {
         if (e.target.id !== 'login-button') return;
