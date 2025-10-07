@@ -6,7 +6,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import path from 'path';
-import { fileURLToPath} from "url";
+import { fileURLToPath } from "url";
 import DbService from './dbService.js';
 dotenv.config()
 
@@ -27,37 +27,40 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "Frontend", "index.html"));
 });
 
-// function to call when needing to verify email format
-function isValidEmail(email) {
-    // simple regex for email validation
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "views","register.html"))
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "views","login.html"))
+});
+
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "views","home.html"))
+});
+
 
 // post request for server to assist in logging into a valid account
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { user, password } = req.body;
 
     try {
-        // const db = DbService.getDbServiceInstance();
-        const user = await db.findUserByEmail(email);
+        const userRecord = await db.findUser(user);
 
-        if (!user) {
+        if (!userRecord) {
             return res.status(400).json({ success: false, error: "User not found" });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, userRecord.password);
         if (!isMatch) {
             return res.status(400).json({ success: false, error: "Invalid password" });
         }
 
-        /*
-        update the user's last login timestamp in the database
-        */
-        await db.updateLastLoginDate(user.id);
+        await db.updateLastLoginDate(userRecord.id);
 
         // success
-        return res.json({ success: true, message: "Login successful", user: { id: user.id, email: user.email } });
+        return res.json({ success: true, message: "Login successful", firstName: userRecord.first_name, username: userRecord.username });
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ success: false, error: "Server error" });
@@ -72,27 +75,24 @@ app.post('/register', async (request, response) => {
 
     try {
         // parses the JSON recieved from the frontend
-        let {firstName, lastName, age, salary, email, password, confirm} = request.body;
+        let {firstName, lastName, age, salary, user, password, confirm} = request.body;
 
         firstName = firstName.toLowerCase().trim();
         lastName = lastName.toLowerCase().trim();
-        email = email.toLowerCase().trim();
+        user = user.toLowerCase().trim();
 
         // checks that all fields contain values
-        if (!firstName || !lastName || !email || !password || !confirm || !age || !salary) {
+        if (!firstName || !lastName || !user || !password || !confirm || !age || !salary) {
                 return response.status(400).json({ error: 'All fields are required' });
             }
 
         // verifies if the password and confirm field match
         if (password !== confirm) return response.status(400).json({error: "Passwords do not match"});
 
-        // calls isValidEmail to verify proper email format
-        if (!isValidEmail(email)) return response.status(400).json({error: 'Invalid email format'});
+        const userTaken = await db.userExists(user); // calls userExists from dbService
 
-        const emailTaken = await db.emailExists(email); // calls emailExists from dbService
-
-        // checks if email in field already exists in database and returns error if true
-        if (emailTaken) return response.status(400).json({error: 'Email already registered'})
+        // checks if user in field already exists in database and returns error if true
+        if (userTaken) return response.status(400).json({error: 'user already registered'})
         
         // we decided to not add a minimum password length or require specific characters
         // but we are hashing password here
@@ -101,9 +101,9 @@ app.post('/register', async (request, response) => {
 
         // passes the values from the json into the newRegistration function from
         // our database service file to submit it to the database
-        const registered = await db.newRegistration(firstName, lastName, age, salary, email, hashPassword);
+        const registered = await db.newRegistration(firstName, lastName, age, salary, user, hashPassword);
 
-        response.status(201).json({data: registered})
+        response.status(201).json({ data: { username: user, firstName: registered.firstName } });
 
     } catch (error) {
         console.error('Registration Error: ' + error);
@@ -111,84 +111,29 @@ app.post('/register', async (request, response) => {
     }
 });
 
-// this is without try-catch easier to write
-// app.post('/register', (request, response) => { 
-//     console.log('app: register user') // verifies the request was sent 
+app.get('/accounts', async (req, res) => {
+    try {
+        const data = await db.getAccountData();
+        // console.log(data)
+        res.json({ data });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch accounts" });
+    }
+});
 
-//     // parses the JSON recieved from the frontend 
-//     const {firstName, lastName, email, password, confirm} = request.body; 
-
-//     // verifies all fields contain values
-//     if (!firstName || !lastName || !email || !password || !confirm) {
-//             return response.status(400).json({ error: 'All fields are required' });
-//         }
-
-//     // verifies if the password and confirm field match 
-//     if (password !== confirm) { 
-//         return response.status(400).json({error: "Passwords do not match"}); } 
-        
-//     // passes the values from the json into the newRegistration function from 
-//     // our database service file to submit it to the database 
-//     const result = db.newRegistration(firstName, lastName, email, password); 
-//     result.then(data => response.json({data: data})) 
-//     .catch(err => console.log(err)); 
-
-// });
-
-
-// read 
+app.get('/get-current-user', (req, res) => {
+    // You can store current user info in session or a temporary global store
+    // For example, here using a placeholder
+    const currentUser = req.query.username ? users.find(u => u.username === req.query.username) : null;
+    if (currentUser) {
+        res.json({ first_name: currentUser.first_name, username: currentUser.username });
+    } else {
+        res.json({ username: 'Guest' });
+    }
+});
 
 // create
-app.post('/insert', (request, response) => {
-    console.log("app: insert a row.");
-    // console.log(request.body); 
-
-    const {name} = request.body;
-    // const db = dbService.getDbServiceInstance();
-
-    const result = db.insertNewName(name);
- 
-    // note that result is a promise
-    result 
-    .then(data => response.json({data: data})) // return the newly added row to frontend, which will show it
-   // .then(data => console.log({data: data})) // debug first before return by response
-   .catch(err => console.log(err));
-});
-
-app.get('/getAll', (request, response) => {
-    
-    // const db = dbService.getDbServiceInstance();
-
-    
-    const result =  db.getAllData(); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-
-// app.get('/search/:name', (request, response) => { // we can debug by URL
-    
-//     const {name} = request.params;
-    
-//     console.log(name);
-
-//     // const db = dbService.getDbServiceInstance();
-
-//     let result;
-//     if(name === "all") // in case we want to search all
-//        result = db.getAllData()
-//     else 
-//        result =  db.searchByName(name); // call a DB function
-
-//     result
-//     .then(data => response.json({data: data}))
-//     .catch(err => console.log(err));
-// });
-
-
-// update
 app.patch('/update', 
      (request, response) => {
           console.log("app: update is called");
@@ -196,7 +141,6 @@ app.patch('/update',
           const{id, name} = request.body;
           console.log(id);
           console.log(name);
-        //   const db = dbService.getDbServiceInstance();
 
           const result = db.updateNameById(id, name);
 
@@ -212,7 +156,6 @@ app.delete('/delete/:id',
         const {id} = request.params;
         console.log("delete");
         console.log(id);
-        // const db = dbService.getDbServiceInstance();
 
         const result = db.deleteRowById(id);
 
@@ -235,10 +178,77 @@ app.post('/debug', (request, response) => {
 // should be deleted finally
 app.get('/testdb', (request, response) => {
     
-    // const db = dbService.getDbServiceInstance();
-
-    
     const result =  db.deleteById("14"); // call a DB function here, change it to the one you want
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
+
+app.get('/search/:first_name', (request, response) => { // we can debug by URL
+    
+    const {first_name} = request.params;
+    
+    console.log(first_name);
+
+    let result;
+    if(first_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByFirstName(first_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
+app.get('/search/:last_name', (request, response) => { // we can debug by URL
+    
+    const {last_name} = request.params;
+    
+    console.log(last_name);
+
+    let result;
+    if(last_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByLastName(last_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
+
+app.get('/search/:first_name', (request, response) => { // we can debug by URL
+    
+    const {first_name} = request.params;
+    
+    console.log(first_name);
+
+    let result;
+    if(first_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByFirstName(first_name); // call a DB function
+
+    result
+    .then(data => response.json({data: data}))
+    .catch(err => console.log(err));
+});
+
+app.get('/search/:last_name', (request, response) => { // we can debug by URL
+    
+    const {last_name} = request.params;
+    
+    console.log(last_name);
+
+    let result;
+    if(last_name === "all") // in case we want to search all
+       result = db.getAllData()
+    else 
+       result =  db.searchByLastName(last_name); // call a DB function
 
     result
     .then(data => response.json({data: data}))
@@ -285,25 +295,12 @@ app.get('/search/:last_name', (request, response) => { // we can debug by URL
 });
 
 // configures node js application on port in .env
+// set up web server listener
+// works whether or not we use .env to configure on port 5050
 app.listen(process.env.PORT || 5050, 
     () => {
         console.log(`Server running on http://localhost:${process.env.PORT}/`)
     }
 );
 
-// set up the web server listener
-// if we use .env to configure
-/*
-app.listen(process.env.PORT, 
-    () => {
-        console.log("I am listening on the configured port " + process.env.PORT)
-    }
-);
-*/
 
-// if we configure here directly
-// app.listen(5050, 
-//     () => {
-//         console.log("I am listening on the fixed port 5050.")
-//     }
-// );

@@ -8,42 +8,13 @@ dotenv.config(); // read from .env file
 let instance = null; 
 
 
-// if you use .env to configure
+// use .env to configure
 console.log("HOST: " + process.env.HOST);
 console.log("DB USER: " + process.env.DB_USER);
 console.log("PASSWORD: " + process.env.PASSWORD);
 console.log("DATABASE: " + process.env.DATABASE);
 console.log("DB PORT: " + process.env.DB_PORT);
 
-// const connection = mysql.createConnection({
-//      host: process.env.HOST,
-//      user: process.env.DB_USER,        
-//      password: process.env.PASSWORD,
-//      database: process.env.DATABASE,
-//      port: process.env.DB_PORT
-// });
-
-
-// if you configure directly in this file, there is a security issue, but it will work
-/*
-const connection = mysql.createConnection({
-     host:"localhost",
-     user:"root",        
-     password:"",
-     database:"web_app",
-     port:3306
-});
-*/
-
-
-// connection.connect((err) => {
-//      if(err){
-//         console.log(err.message);
-//      }
-//      console.log('db ' + connection.state);    // to see if the DB is connected or not
-// });
-
-// the following are database functions, 
 
 class DbService{
     constructor() {
@@ -64,31 +35,14 @@ class DbService{
         return instance ? instance: (instance = new DbService());
     }
 
-   // checks if an email already exists inside the database to prevent duplicates
-   async emailExists(email) {
-      try {
-         const exists = await new Promise((resolve, reject) => {
-               const query = "SELECT COUNT(*) AS count FROM accounts WHERE email = ?";
-               this.connection.query(query, [email], (err, result) => {
-                  if (err) reject(err);
-                  else resolve(result[0].count > 0);
-               });
-         });
-         return exists;
-      } catch (err) {
-         console.error(err);
-         throw err;
-      }
-   }
-
    // inserts new registered accounts into database
-   async newRegistration(firstName, lastName, age, salary, email, password){
+   async newRegistration(firstName, lastName, age, salary, user, password){
       try{
             const creationDate = new Date();
             const insertId = await new Promise((resolve, reject)=>{
-               const query = "INSERT INTO accounts (first_name, last_name, age, salary, email, password, date_created)" 
+               const query = "INSERT INTO accounts (first_name, last_name, age, salary, username, password, date_created)" 
                  + " VALUES (?, ?, ?, ?, ?, ?, ?);";
-               this.connection.query(query, [firstName, lastName, age, salary, email, password, creationDate], (err, result) => {
+               this.connection.query(query, [firstName, lastName, age, salary, user, password, creationDate], (err, result) => {
                   if(err) reject(new Error(err.message));
                   else resolve(result.insertId);
                });
@@ -100,7 +54,7 @@ class DbService{
                lastName,
                age,
                salary,
-               email,
+               user,
                creationDate
             }
       } catch(error){
@@ -108,11 +62,28 @@ class DbService{
       }
    }
 
-   async findUserByEmail(email) {
+   // checks if an user already exists inside the database to prevent duplicates
+   async userExists(user) {
+      try {
+         const exists = await new Promise((resolve, reject) => {
+               const query = "SELECT COUNT(*) AS count FROM accounts WHERE username = ?";
+               this.connection.query(query, [user], (err, result) => {
+                  if (err) reject(err);
+                  else resolve(result[0].count > 0);
+               });
+         });
+         return exists;
+      } catch (err) {
+         console.error(err);
+         throw err;
+      }
+   }
+
+   async findUser(user) {
       try {
          return await new Promise((resolve, reject) => {
-               const query = "SELECT * FROM accounts WHERE email = ?";
-               this.connection.query(query, [email], (err, results) => {
+               const query = "SELECT * FROM accounts WHERE username = ?";
+               this.connection.query(query, [user], (err, results) => {
                   if (err) reject(err);
                   else resolve(results.length > 0 ? results[0] : null);
                });
@@ -202,7 +173,7 @@ class DbService{
             );
         
             // console.log("dbServices.js: search result:");
-            // console.log(response);  // for debugging to see the result of select
+            console.log(response);  // for debugging to see the result of select
             return response;
 
         }  catch(error){
@@ -310,7 +281,7 @@ class DbService{
    async updateLastLoginDate(userId) {
       try {
          const query = `UPDATE accounts SET last_login_date = NOW() WHERE id = ?`;
-         const response = await new Promise((resolve, reject) => {
+         await new Promise((resolve, reject) => {
             this.connection.query(query, [userId], (err, result) => {
                if (err) reject(err);
                else resolve(result);
@@ -361,7 +332,7 @@ class DbService{
 
 
    /*
-      Search by user's first name
+      Search by user's full name
    */
    async searchByFirstName(first_name) {
       try {
@@ -379,7 +350,7 @@ class DbService{
    }
 
    /*
-      Search by user's last name
+      Search by user's full name
    */
    async searchByLastName(last_name) {
       try {
@@ -431,7 +402,6 @@ class DbService{
          console.log(error);
       }
    }
-
 }
 
 export default DbService;

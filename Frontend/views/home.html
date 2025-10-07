@@ -4,11 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/nav.css">
     <script src="https://kit.fontawesome.com/f5ff6087ca.js" crossorigin="anonymous"></script>
     <title>Home Page</title>
 </head>
 <body>
-    <div>This is your temporary home page</div>
 
+    <div id="navbar-container"></div>
+    
+    <div id="home-welcome"></div>
+
+    <div class="table-wrapper">
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username<br><input type="text" id="search-username" placeholder="Username"></th>
+                    <th>First Name<br><input type="text" id="search-first" placeholder="First Name"></th>
+                    <th>Last Name<br><input type="text" id="search-last" placeholder="Last Name"></th>
+                    <th>Age<br><input type="text" id="search-age" placeholder="Min-Max"></th>
+                    <th>Salary<br><input type="text" id="search-salary" placeholder="Min-Max"></th>
+                    <th>Registration Date<br>
+                        <select id="reg-date-filter-type">
+                            <option value="">All</option>
+                            <option value="after-user">Registered After User</option>
+                            <option value="same-day-user">Same Day as User</option>
+                            <option value="today">Registered Today</option>
+                        </select>
+                        <input type="text" id="reg-date-filter-user" placeholder="Enter username" style="display:none;">
+                    </th>
+                    <th>Last Logged In<br><input type="text" id="search-last-login" placeholder="Never / Date"></th>
+                </tr>
+            </thead>
+            <tbody id="data-table-body"></tbody>
+        </table>
+    </div>
+
+    <script type="module" src="/static/js/home.js"></script>
 </body>
 </html>
