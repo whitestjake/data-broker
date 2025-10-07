@@ -27,6 +27,14 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "Frontend", "index.html"));
 });
 
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "views","register.html"))
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "Frontend", "views","login.html"))
+});
+
 
 // post request for server to assist in logging into a valid account
 app.post('/login', async (req, res) => {
