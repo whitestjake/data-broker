@@ -1,35 +1,22 @@
 CREATE DATABASE IF NOT EXISTS dse6100_project1;
 USE dse6100_project1;
 
-CREATE TABLE IF NOT EXISTS names (
+create table names (
     id int not null auto_increment,
     name varchar(20),
     date_added Date,
     primary key (id)  
 );
 
-create table accounts (
+CREATE TABLE IF NOT EXISTS accounts (
     id int not null auto_increment,
     first_name varchar(20),
     last_name varchar(20),
     username varchar(30),
     password varchar(100),
-    date_created datetime,
-    last_login datetime default null,
     salary decimal(9,2) unsigned,
-    age int check (age>=0), 
+    age int check (age>=0),
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login_date TIMESTAMP NULL -- Save data after user login,
     primary key (id)
-    
-)
-
-CREATE TABLE IF NOT EXISTS accounts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(20),
-    last_name VARCHAR(20),
-    email VARCHAR(50) UNIQUE,
-    password VARCHAR(255),
-    salary DECIMAL(10,2), -- Ten digits in total, two of which are decimal places.
-    age INT,
-    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    last_login_date DATETIME NULL -- Save data after user login
 );
