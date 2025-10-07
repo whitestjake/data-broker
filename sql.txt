@@ -1,13 +1,14 @@
 CREATE DATABASE IF NOT EXISTS dse6100_project1;
 USE dse6100_project1;
 
-create table names (
+CREATE TABLE IF NOT EXISTS names (
     id int not null auto_increment,
     name varchar(20),
     date_added Date,
     primary key (id)  
 );
 
+-- User accounts table with login tracking
 CREATE TABLE IF NOT EXISTS accounts (
     id int not null auto_increment,
     first_name varchar(20),
@@ -17,6 +18,6 @@ CREATE TABLE IF NOT EXISTS accounts (
     salary decimal(9,2) unsigned,
     age int check (age>=0),
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login_date TIMESTAMP NULL -- Save data after user login,
+    last_login_date TIMESTAMP NULL, -- Saves data after user login
     primary key (id)
 );
