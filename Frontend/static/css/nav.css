@@ -3,22 +3,22 @@
 #main-nav {
     display: flex;
     align-items: center;
-    font-size: 0.8em;
+    font-size: 0.6em;
     font-family: Arial, sans-serif;
 }
 
 /* Logo container */
 #nav-logo a {
     display: flex;
-    flex-direction: column;      /* stack vertically */
+    flex-direction: column;    
     justify-content: center;
     align-items: center;
     text-decoration: none;
     color: inherit;
-    width: 5em;                 /* adjust size of circle */
-    height: 5em;
-    border: 0.2em solid #000000;      /* circle border */
-    border-radius: 50%;          /* makes it a circle */
+    width: 4.5em;         
+    height: 4.5em;
+    border: 0.2em solid #000000;     
+    border-radius: 50%;         
     font-weight: bold;
     font-size: 1em;
     text-align: center;
