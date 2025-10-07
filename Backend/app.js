@@ -185,12 +185,13 @@ app.get('/testdb', (request, response) => {
     .catch(err => console.log(err));
 });
 
-
-app.get('/search/:first_name', (request, response) => { // we can debug by URL
+app.get('/search/first/:first_name', (request, response) => { // we can debug by URL
     
     const {first_name} = request.params;
     
     console.log(first_name);
+
+    // const db = dbService.getDbServiceInstance();
 
     let result;
     if(first_name === "all") // in case we want to search all
@@ -203,79 +204,7 @@ app.get('/search/:first_name', (request, response) => { // we can debug by URL
     .catch(err => console.log(err));
 });
 
-app.get('/search/:last_name', (request, response) => { // we can debug by URL
-    
-    const {last_name} = request.params;
-    
-    console.log(last_name);
-
-    let result;
-    if(last_name === "all") // in case we want to search all
-       result = db.getAllData()
-    else 
-       result =  db.searchByLastName(last_name); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-
-app.get('/search/:first_name', (request, response) => { // we can debug by URL
-    
-    const {first_name} = request.params;
-    
-    console.log(first_name);
-
-    let result;
-    if(first_name === "all") // in case we want to search all
-       result = db.getAllData()
-    else 
-       result =  db.searchByFirstName(first_name); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-app.get('/search/:last_name', (request, response) => { // we can debug by URL
-    
-    const {last_name} = request.params;
-    
-    console.log(last_name);
-
-    let result;
-    if(last_name === "all") // in case we want to search all
-       result = db.getAllData()
-    else 
-       result =  db.searchByLastName(last_name); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-
-app.get('/search/:first_name', (request, response) => { // we can debug by URL
-    
-    const {first_name} = request.params;
-    
-    console.log(first_name);
-
-    // const db = dbService.getDbServiceInstance();
-
-    let result;
-    if(first_name === "all") // in case we want to search all
-       result = db.getAllData()
-    else 
-       result =  db.searchByName(first_name); // call a DB function
-
-    result
-    .then(data => response.json({data: data}))
-    .catch(err => console.log(err));
-});
-
-app.get('/search/:last_name', (request, response) => { // we can debug by URL
+app.get('/search/last/:last_name', (request, response) => { // we can debug by URL
     
     const {last_name} = request.params;
     
@@ -287,7 +216,7 @@ app.get('/search/:last_name', (request, response) => { // we can debug by URL
     if(last_name === "all") // in case we want to search all
        result = db.getAllData()
     else 
-       result =  db.searchByName(last_name); // call a DB function
+       result =  db.searchByLastName(last_name); // call a DB function
 
     result
     .then(data => response.json({data: data}))
