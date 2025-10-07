@@ -2,10 +2,9 @@
 
 /* Primary login container */
 #primary-login-container {
-    max-width: 25rem;          /* ~400px relative */
+    max-width: 20rem;          /* ~400px relative */
     width: 90%;                /* responsive width */
-    margin: 5vh auto;          /* vertical margin based on viewport height */
-    padding: 2rem;
+    padding: 1rem;
     border: 0.1rem solid #ccc; /* relative border */
     border-radius: 1rem;
     background-color: #f9f9f9;
@@ -15,13 +14,13 @@
 
 /* Title */
 #login-title h2 {
-    margin-bottom: 0.3rem;
+    margin-bottom: 0;
     font-size: 1.5rem;
     text-align: center;
 }
 
 #login-title p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     text-align: center;
     color: #555;
     font-size: 1rem;
@@ -31,7 +30,7 @@
 .input-group {
     position: relative;
     width: 100%;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
 }
 
 /* FontAwesome icon */
