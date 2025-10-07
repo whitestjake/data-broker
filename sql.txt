@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS accounts (
     last_name varchar(20),
     username varchar(30),
     password varchar(100),
-    date_created datetime,
     salary decimal(9,2) unsigned,
     age int check (age>=0),
     registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,

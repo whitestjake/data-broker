@@ -11,6 +11,30 @@
 
     <div id="home-welcome"></div>
 
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username<br><input type="text" id="search-username" placeholder="Search Username"></th>
+                <th>First Name<br><input type="text" id="search-first" placeholder="Search First Name"></th>
+                <th>Last Name<br><input type="text" id="search-last" placeholder="Search Last Name"></th>
+                <th>Age<br><input type="text" id="search-age" placeholder="Min-Max"></th>
+                <th>Salary<br><input type="text" id="search-salary" placeholder="Min-Max"></th>
+                <th>Registration Date<br>
+                    <select id="reg-date-filter-type">
+                        <option value="">All</option>
+                        <option value="after-user">Registered After User</option>
+                        <option value="same-day-user">Same Day as User</option>
+                        <option value="today">Registered Today</option>
+                    </select>
+                    <input type="text" id="reg-date-filter-user" placeholder="Enter username" style="display:none;">
+                </th>
+                <th>Last Logged In<br><input type="text" id="search-last-login" placeholder="Never / Date"></th>
+            </tr>
+        </thead>
+        <tbody id="data-table-body"></tbody>
+    </table>
+
     <script type="module" src="/static/js/home.js"></script>
 </body>
 </html>

@@ -99,32 +99,26 @@ app.post('/register', async (request, response) => {
     }
 });
 
-// this is without try-catch easier to write
-// app.post('/register', (request, response) => { 
-//     console.log('app: register user') // verifies the request was sent 
+app.get('/accounts', async (req, res) => {
+    try {
+        const data = await db.getAccountData();
+        res.json({ data });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch accounts" });
+    }
+});
 
-//     // parses the JSON recieved from the frontend 
-//     const {firstName, lastName, email, password, confirm} = request.body; 
-
-//     // verifies all fields contain values
-//     if (!firstName || !lastName || !email || !password || !confirm) {
-//             return response.status(400).json({ error: 'All fields are required' });
-//         }
-
-//     // verifies if the password and confirm field match 
-//     if (password !== confirm) { 
-//         return response.status(400).json({error: "Passwords do not match"}); } 
-        
-//     // passes the values from the json into the newRegistration function from 
-//     // our database service file to submit it to the database 
-//     const result = db.newRegistration(firstName, lastName, email, password); 
-//     result.then(data => response.json({data: data})) 
-//     .catch(err => console.log(err)); 
-
-// });
-
-
-// read 
+app.get('/get-current-user', (req, res) => {
+    // You can store current user info in session or a temporary global store
+    // For example, here using a placeholder
+    const currentUser = req.query.username ? users.find(u => u.username === req.query.username) : null;
+    if (currentUser) {
+        res.json({ first_name: currentUser.first_name, username: currentUser.username });
+    } else {
+        res.json({ username: 'Guest' });
+    }
+});
 
 // create
 app.patch('/update', 
