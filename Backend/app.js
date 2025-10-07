@@ -47,7 +47,7 @@ app.post('/login', async (req, res) => {
         await db.updateLastLoginDate(userRecord.id);
 
         // success
-        return res.json({ success: true, message: "Login successful", username: userRecord.username });
+        return res.json({ success: true, message: "Login successful", firstName: userRecord.first_name, username: userRecord.username });
 
     } catch (err) {
         console.error(err);
@@ -91,7 +91,7 @@ app.post('/register', async (request, response) => {
         // our database service file to submit it to the database
         const registered = await db.newRegistration(firstName, lastName, age, salary, user, hashPassword);
 
-        response.status(201).json({data: registered})
+        response.status(201).json({ data: { username: user, firstName: registered.firstName } });
 
     } catch (error) {
         console.error('Registration Error: ' + error);

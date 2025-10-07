@@ -42,6 +42,7 @@ export function initLoginForm(container) {
                 console.log('Login Error:', data.error);
             } else {
                 console.log("Login Successful");
+                sessionStorage.setItem("username", data.user);
                 window.location.href = "/views/home.html";
             }
         })

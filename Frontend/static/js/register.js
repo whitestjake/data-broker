@@ -83,6 +83,7 @@ export function initRegisterForm(container) {
             } else {
                 formContainer.querySelector('#register-success')?.removeAttribute('hidden');
                 console.log("Registration Successful");
+                sessionStorage.setItem('firstName', data.data.firstName);
                 setTimeout(() => { window.location.href = "/views/home.html"; }, 1000);
             }
         })
