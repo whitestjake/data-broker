@@ -1,8 +1,10 @@
 
-
+import { loadNavbar } from '/static/js/nav.js';
 
 export function initRegisterForm(container) {
     if (!container) return;
+
+    loadNavbar();
 
     // Salary input auto-formatting (currency)
     container.addEventListener('input', (e) => {

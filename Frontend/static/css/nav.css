@@ -40,4 +40,13 @@
     line-height: 1;
 }
 
+#nav-routes {
+    padding: 0 2em 0 2em;
+}
 
+#nav-routes a {
+    padding: 0 2em 0 2em;
+    text-decoration: none;
+    color: black;
+    font-size: 1.5em;
+}

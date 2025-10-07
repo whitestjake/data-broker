@@ -19,6 +19,20 @@ export async function loadNavbar(containerId = 'navbar-container') {
                 window.location.href = '/';
             });
         }
+
+        const navLogin = container.querySelector('#login-route');
+        if (navLogin) {
+            navLogin.addEventListener('click', () => {
+                window.location.href = '/'
+            });
+        }
+
+        const navRegister = container.querySelector('#register-route');
+        if (navRegister) {
+            navRegister.addEventListener('click', () => {
+                window.location.href = '/register'
+            });
+        }
     } catch (err) {
         console.error('Error loading navbar:', err);
     }
