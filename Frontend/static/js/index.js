@@ -3,8 +3,12 @@
 
 import { initLoginForm } from '/static/js/login.js';
 import { initRegisterForm } from '/static/js/register.js';
+import { loadNavbar } from '/static/js/nav.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    // load navbar
+    loadNavbar();
 
     // Generic function to load a view into a container
     async function loadView(viewName, containerId) {

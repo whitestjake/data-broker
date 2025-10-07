@@ -1,142 +1,131 @@
 
+import { loadNavbar } from '/static/js/nav.js';
 
 
-// home.js
-document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch current user info to display welcome
-    const username = sessionStorage.getItem('username') || 'User';
-    const firstName = sessionStorage.getItem('firstName') || username;
-    document.getElementById('home-welcome').textContent = `Welcome ${capitalize(firstName)}, this is your data home page`;
+document.addEventListener("DOMContentLoaded", async () => {
 
-    // Fetch all account data
-    let users = await fetch("http://localhost:5050/accounts") // Replace with backend fetch
-        .then(res => fetch("http://localhost:5050/accounts")  // Example endpoint
-            .then(r => r.json()))
-        .then(data => data.data || [])
-        .catch(err => { console.error(err); return []; });
+    loadNavbar();
 
-    // Format the data
-    users.forEach(u => {
-        u.username = capitalize(u.username);
-        u.first_name = capitalize(u.first_name);
-        u.last_name = capitalize(u.last_name);
-        if (u.salary !== undefined && u.salary !== null) {
-            u.salary = formatCurrency(u.salary);
+    const welcomeDiv = document.getElementById('home-welcome');
+    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+
+    if (loggedInUser) {
+        welcomeDiv.textContent = `Welcome ${capitalize(loggedInUser.firstName)}, this is your data home page`;
+    } else {
+        welcomeDiv.textContent = "Welcome, please log in!";
+    }
+
+    const tableBody = document.getElementById('data-table-body');
+    let allUsers = [];
+
+    // Fetch all users from backend
+    async function fetchUsers() {
+        try {
+            const res = await fetch('http://localhost:5050/accounts'); // Make sure you have this route
+            const data = await res.json();
+            allUsers = data.data; // assuming backend sends { data: [...] }
+            renderTable(allUsers);
+        } catch (err) {
+            console.error('Error fetching users:', err);
         }
-        if (u.date_created) u.date_created = new Date(u.date_created);
-        if (u.last_login) u.last_login = new Date(u.last_login);
-    });
+    }
 
-    const tbody = document.getElementById('data-table-body');
-
-    // Utility functions
+    // Capitalize first letter helper
     function capitalize(str) {
         if (!str) return '';
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    function formatCurrency(val) {
-        return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    // Format salary as currency
+    function formatCurrency(num) {
+        if (isNaN(num)) return '';
+        return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Render table
-    function renderTable(filteredUsers) {
-        tbody.innerHTML = '';
-        filteredUsers.forEach(u => {
+    // Render the table based on array of users
+    function renderTable(users) {
+        tableBody.innerHTML = '';
+        users.forEach(user => {
             const tr = document.createElement('tr');
+
             tr.innerHTML = `
-                <td>${u.id}</td>
-                <td>${u.username}</td>
-                <td>${u.first_name}</td>
-                <td>${u.last_name}</td>
-                <td>${u.age}</td>
-                <td>${u.salary}</td>
-                <td>${u.date_created ? u.date_created.toLocaleDateString() : ''}</td>
-                <td>${u.last_login ? u.last_login.toLocaleDateString() : 'Never'}</td>
+                <td>${user.id}</td>
+                <td>${capitalize(user.username)}</td>
+                <td>${capitalize(user.first_name)}</td>
+                <td>${capitalize(user.last_name)}</td>
+                <td>${user.age}</td>
+                <td>${formatCurrency(user.salary)}</td>
+                <td>${user.date_created ? new Date(user.date_created).toISOString().split('T')[0] : ''}</td>
+                <td>${user.last_login ? new Date(user.last_login).toISOString().split('T')[0] : 'Never'}</td>
             `;
-            tbody.appendChild(tr);
+            tableBody.appendChild(tr);
         });
     }
 
-    renderTable(users);
+    // Filter function
+    function filterTable() {
+        const usernameInput = document.getElementById('search-username').value.toLowerCase();
+        const firstInput = document.getElementById('search-first').value.toLowerCase();
+        const lastInput = document.getElementById('search-last').value.toLowerCase();
+        const ageInput = document.getElementById('search-age').value;
+        const salaryInput = document.getElementById('search-salary').value;
+        const regDateInput = document.getElementById('search-reg-date').value;
+        const lastLoginInput = document.getElementById('search-last-login').value.toLowerCase();
 
-    // Show/hide input for "after-user" and "same-day-user"
-    const regFilterDropdown = document.getElementById('reg-date-filter-type');
-    const regFilterUserInput = document.getElementById('reg-date-filter-user');
-    regFilterDropdown.addEventListener('change', () => {
-        if (regFilterDropdown.value === 'after-user' || regFilterDropdown.value === 'same-day-user') {
-            regFilterUserInput.style.display = 'inline-block';
-        } else {
-            regFilterUserInput.style.display = 'none';
-            regFilterUserInput.value = '';
-        }
-        applyFilters();
-    });
+        const filtered = allUsers.filter(user => {
+            // Username filter
+            if (usernameInput && !user.username.toLowerCase().includes(usernameInput)) return false;
 
-    // Individual search inputs
-    const filters = [
-        { id: 'search-username', key: 'username' },
-        { id: 'search-first', key: 'first_name' },
-        { id: 'search-last', key: 'last_name' },
-        { id: 'search-age', key: 'age' },
-        { id: 'search-salary', key: 'salary' },
-        { id: 'search-last-login', key: 'last_login' }
-    ];
+            // First name filter
+            if (firstInput && !user.first_name.toLowerCase().includes(firstInput)) return false;
 
-    filters.forEach(f => {
-        const el = document.getElementById(f.id);
-        el.addEventListener('input', applyFilters);
-    });
+            // Last name filter
+            if (lastInput && !user.last_name.toLowerCase().includes(lastInput)) return false;
 
-    regFilterUserInput.addEventListener('input', applyFilters);
-
-    function applyFilters() {
-        let filtered = [...users];
-
-        // Text and range filters
-        filters.forEach(f => {
-            const val = document.getElementById(f.id).value.trim();
-            if (!val) return;
-            if (f.key === 'age' || f.key === 'salary') {
-                const parts = val.split('-').map(v => parseFloat(v.trim()));
-                if (parts.length === 2) {
-                    filtered = filtered.filter(u => {
-                        const num = f.key === 'age' ? u.age : parseFloat(u.salary.replace(/[$,]/g, ''));
-                        return num >= parts[0] && num <= parts[1];
-                    });
-                }
-            } else if (f.key === 'last_login') {
-                if (val.toLowerCase() === 'never') {
-                    filtered = filtered.filter(u => !u.last_login);
-                } else {
-                    const date = new Date(val);
-                    filtered = filtered.filter(u => u.last_login && u.last_login.toDateString() === date.toDateString());
-                }
-            } else {
-                filtered = filtered.filter(u => u[f.key].toLowerCase().includes(val.toLowerCase()));
+            // Age filter
+            if (ageInput) {
+                const [min, max] = ageInput.split('-').map(a => parseInt(a.trim(), 10));
+                if (!isNaN(min) && user.age < min) return false;
+                if (!isNaN(max) && user.age > max) return false;
             }
+
+            // Salary filter
+            if (salaryInput) {
+                const [min, max] = salaryInput.split('-').map(a => parseFloat(a.trim()));
+                if (!isNaN(min) && user.salary < min) return false;
+                if (!isNaN(max) && user.salary > max) return false;
+            }
+
+            // Registration date filter
+            if (regDateInput) {
+                const regDate = new Date(user.date_created).toISOString().split('T')[0];
+                if (!regDate.includes(regDateInput)) return false;
+            }
+
+            // Last login filter
+            if (lastLoginInput) {
+                if (lastLoginInput === 'never' && user.last_login !== null) return false;
+                if (lastLoginInput !== 'never' && user.last_login) {
+                    const lastLoginDate = new Date(user.last_login).toISOString().split('T')[0];
+                    if (!lastLoginDate.includes(lastLoginInput)) return false;
+                }
+            }
+
+            return true;
         });
-
-        // Registration date filter
-        const regFilterType = regFilterDropdown.value;
-        const regFilterUser = regFilterUserInput.value.trim().toLowerCase();
-
-        if ((regFilterType === 'after-user' || regFilterType === 'same-day-user') && regFilterUser) {
-            const targetUser = users.find(u => u.username.toLowerCase() === regFilterUser);
-            if (targetUser && targetUser.date_created) {
-                if (regFilterType === 'after-user') {
-                    filtered = filtered.filter(u => u.date_created > targetUser.date_created);
-                } else if (regFilterType === 'same-day-user') {
-                    filtered = filtered.filter(u => u.date_created.toDateString() === targetUser.date_created.toDateString());
-                }
-            }
-        } else if (regFilterType === 'today') {
-            const today = new Date();
-            filtered = filtered.filter(u => u.date_created && u.date_created.toDateString() === today.toDateString());
-        }
 
         renderTable(filtered);
     }
+
+    // Add event listeners for search inputs
+    ['search-username','search-first','search-last','search-age','search-salary','search-reg-date','search-last-login']
+        .forEach(id => {
+            const input = document.getElementById(id);
+            if (input) input.addEventListener('input', filterTable);
+        });
+
+    await fetchUsers();
 });
+
 
 

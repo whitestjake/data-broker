@@ -1,16 +1,12 @@
 
 
 
-
 export function initLoginForm(container) {
     if (!container) return;
 
-    // Event delegation: listen for clicks anywhere inside the container
     container.addEventListener('click', (e) => {
-        // Only handle clicks on the login button
         if (e.target.id !== 'login-button') return;
 
-        // Scope search to the closest parent div (or container itself)
         const formContainer = e.target.closest('div') || container;
 
         const userInput = formContainer.querySelector("#login-username-input");
@@ -29,7 +25,6 @@ export function initLoginForm(container) {
             return;
         }
 
-        // Send login request
         fetch("http://localhost:5050/login", {
             headers: { 'Content-type': 'application/json' },
             method: 'POST',
@@ -42,7 +37,13 @@ export function initLoginForm(container) {
                 console.log('Login Error:', data.error);
             } else {
                 console.log("Login Successful");
-                sessionStorage.setItem("username", data.user);
+
+                // STORE LOGGED-IN USER INFO
+                sessionStorage.setItem('loggedInUser', JSON.stringify({
+                    username: data.username,
+                    firstName: data.firstName
+                }));
+
                 window.location.href = "/views/home.html";
             }
         })
@@ -50,13 +51,13 @@ export function initLoginForm(container) {
     });
 }
 
-// Auto-initialzie for direct page load
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('login-container') || document.body;
     if (document.getElementById('login-button')) {
         initLoginForm(container);
     }
 });
+
 
 
 

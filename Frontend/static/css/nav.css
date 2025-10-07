@@ -1,0 +1,43 @@
+
+
+#main-nav {
+    display: flex;
+    align-items: center;
+    font-size: 0.8em;
+    font-family: Arial, sans-serif;
+}
+
+/* Logo container */
+#nav-logo a {
+    display: flex;
+    flex-direction: column;      /* stack vertically */
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    width: 5em;                 /* adjust size of circle */
+    height: 5em;
+    border: 0.2em solid #000000;      /* circle border */
+    border-radius: 50%;          /* makes it a circle */
+    font-weight: bold;
+    font-size: 1em;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#nav-logo a:hover {
+    background-color: #929292;
+}
+
+.logo-top {
+    display: block;
+    line-height: 1;
+}
+
+.logo-bottom {
+    display: block;
+    line-height: 1;
+}
+
+
