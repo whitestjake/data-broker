@@ -8,42 +8,13 @@ dotenv.config(); // read from .env file
 let instance = null; 
 
 
-// if you use .env to configure
+// use .env to configure
 console.log("HOST: " + process.env.HOST);
 console.log("DB USER: " + process.env.DB_USER);
 console.log("PASSWORD: " + process.env.PASSWORD);
 console.log("DATABASE: " + process.env.DATABASE);
 console.log("DB PORT: " + process.env.DB_PORT);
 
-// const connection = mysql.createConnection({
-//      host: process.env.HOST,
-//      user: process.env.DB_USER,        
-//      password: process.env.PASSWORD,
-//      database: process.env.DATABASE,
-//      port: process.env.DB_PORT
-// });
-
-
-// if you configure directly in this file, there is a security issue, but it will work
-/*
-const connection = mysql.createConnection({
-     host:"localhost",
-     user:"root",        
-     password:"",
-     database:"web_app",
-     port:3306
-});
-*/
-
-
-// connection.connect((err) => {
-//      if(err){
-//         console.log(err.message);
-//      }
-//      console.log('db ' + connection.state);    // to see if the DB is connected or not
-// });
-
-// the following are database functions, 
 
 class DbService{
     constructor() {
@@ -328,10 +299,9 @@ class DbService{
    */
    async searchById(id) {
       try {
-         const connection = await this.dbConnection();
          const response = await new Promise((resolve, reject) => {
                const query = "SELECT * FROM accounts WHERE id = ?;";
-               connection.query(query, [id], (err, results) => {
+               this.connection.query(query, [id], (err, results) => {
                   if (err) reject(new Error(err.message));
                   else resolve(results);
                });
@@ -347,10 +317,9 @@ class DbService{
    */
    async searchByFullName(first_name, last_name) {
       try {
-         const connection = await this.dbConnection();
          const response = await new Promise((resolve, reject) => {
                const query = "SELECT * FROM accounts WHERE first_name = ? AND last_name = ?;";
-               connection.query(query, [first_name, last_name], (err, results) => {
+               this.connection.query(query, [first_name, last_name], (err, results) => {
                   if (err) reject(new Error(err.message));
                   else resolve(results);
                });
@@ -367,10 +336,9 @@ class DbService{
    */
    async searchByFirstName(first_name) {
       try {
-         const connection = await this.dbConnection();
          const response = await new Promise((resolve, reject) => {
                const query = "SELECT * FROM accounts WHERE first_name = ?;";
-               connection.query(query, [first_name], (err, results) => {
+               this.connection.query(query, [first_name], (err, results) => {
                   if (err) reject(new Error(err.message));
                   else resolve(results);
                });
@@ -386,10 +354,9 @@ class DbService{
    */
    async searchByLastName(last_name) {
       try {
-         const connection = await this.dbConnection();
          const response = await new Promise((resolve, reject) => {
                const query = "SELECT * FROM accounts WHERE last_name = ?;";
-               connection.query(query, [last_name], (err, results) => {
+               this.connection.query(query, [last_name], (err, results) => {
                   if (err) reject(new Error(err.message));
                   else resolve(results);
                });
@@ -405,10 +372,9 @@ class DbService{
    */
    async searchBySalary(minSalary,maxSalary) {
       try {
-         const connection = await this.dbConnection();
          const response = await new Promise((resolve, reject) => {
                const query = "SELECT * FROM accounts WHERE salary BETWEEN ? AND ?";
-               connection.query(query, [minSalary,maxSalary], (err, results) => {
+               this.connection.query(query, [minSalary,maxSalary], (err, results) => {
                   if (err) reject(new Error(err.message));
                   else resolve(results);
                });
@@ -424,10 +390,9 @@ class DbService{
    */
    async searchByAge(minAge,maxAge) {
       try {
-         const connection = await this.dbConnection();
          const response = await new Promise((resolve, reject) => {
                const query = "SELECT * FROM accounts WHERE age BETWEEN ? AND ?";
-               connection.query(query, [minAge,maxAge], (err, results) => {
+               this.connection.query(query, [minAge,maxAge], (err, results) => {
                   if (err) reject(new Error(err.message));
                   else resolve(results);
                });
