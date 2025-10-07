@@ -27,19 +27,12 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "Frontend", "index.html"));
 });
 
-// function to call when needing to verify email format
-function isValidEmail(email) {
-    // simple regex for email validation
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
 
 // post request for server to assist in logging into a valid account
 app.post('/login', async (req, res) => {
     const { user, password } = req.body;
 
     try {
-        // const db = DbService.getDbServiceInstance();
         const userRecord = await db.findUser(user);
 
         if (!userRecord) {
@@ -141,7 +134,6 @@ app.patch('/update',
           const{id, name} = request.body;
           console.log(id);
           console.log(name);
-        //   const db = dbService.getDbServiceInstance();
 
           const result = db.updateNameById(id, name);
 
@@ -157,7 +149,6 @@ app.delete('/delete/:id',
         const {id} = request.params;
         console.log("delete");
         console.log(id);
-        // const db = dbService.getDbServiceInstance();
 
         const result = db.deleteRowById(id);
 
@@ -180,9 +171,6 @@ app.post('/debug', (request, response) => {
 // should be deleted finally
 app.get('/testdb', (request, response) => {
     
-    // const db = dbService.getDbServiceInstance();
-
-    
     const result =  db.deleteById("14"); // call a DB function here, change it to the one you want
 
     result
@@ -196,8 +184,6 @@ app.get('/search/:first_name', (request, response) => { // we can debug by URL
     const {first_name} = request.params;
     
     console.log(first_name);
-
-    // const db = dbService.getDbServiceInstance();
 
     let result;
     if(first_name === "all") // in case we want to search all
@@ -215,8 +201,6 @@ app.get('/search/:last_name', (request, response) => { // we can debug by URL
     const {last_name} = request.params;
     
     console.log(last_name);
-
-    // const db = dbService.getDbServiceInstance();
 
     let result;
     if(last_name === "all") // in case we want to search all
