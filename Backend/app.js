@@ -230,27 +230,13 @@ app.get('/search/:last_name', (request, response) => { // we can debug by URL
 });
 
 
-
 // configures node js application on port in .env
+// set up web server listener
+// works whether or not we use .env to configure on port 5050
 app.listen(process.env.PORT || 5050, 
     () => {
         console.log(`Server running on http://localhost:${process.env.PORT}/`)
     }
 );
 
-// set up the web server listener
-// if we use .env to configure
-/*
-app.listen(process.env.PORT, 
-    () => {
-        console.log("I am listening on the configured port " + process.env.PORT)
-    }
-);
-*/
 
-// if we configure here directly
-// app.listen(5050, 
-//     () => {
-//         console.log("I am listening on the fixed port 5050.")
-//     }
-// );
