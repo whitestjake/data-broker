@@ -58,7 +58,8 @@ class DbService{
                creationDate
             }
       } catch(error){
-         console.log(error);
+         console.log('newRegistration error:', error);
+         throw error;
       }
    }
 

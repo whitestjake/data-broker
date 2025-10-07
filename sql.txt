@@ -21,3 +21,4 @@ CREATE TABLE IF NOT EXISTS accounts (
     last_login_date TIMESTAMP NULL, -- Saves data after user login
     primary key (id)
 );
+
