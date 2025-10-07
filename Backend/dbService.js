@@ -40,7 +40,7 @@ class DbService{
       try{
             const creationDate = new Date();
             const insertId = await new Promise((resolve, reject)=>{
-               const query = "INSERT INTO accounts (first_name, last_name, age, salary, username, password, date_created)" 
+               const query = "INSERT INTO accounts (first_name, last_name, age, salary, username, password, registration_date)" 
                  + " VALUES (?, ?, ?, ?, ?, ?, ?);";
                this.connection.query(query, [firstName, lastName, age, salary, user, password, creationDate], (err, result) => {
                   if(err) reject(new Error(err.message));
