@@ -300,12 +300,13 @@ app.get('/search/age', async (req, res) => {
 // Unified search endpoint
 app.get('/search', async (req, res) => {
     try {
-        const { username, first_name, last_name, age, salary, lastLogin, regFilterType, regFilterUser } = req.query;
+        const { id, username, first_name, last_name, age, salary, lastLogin, regFilterType, regFilterUser } = req.query;
 
         // Start fresh each time
         let results = await db.getAccountData();
-
+        
         // --- Basic filters ---
+        if (id) results = results.filter(u => String(u.id) === String(id));
         if (username) results = results.filter(u => u.username.toLowerCase().includes(username.toLowerCase()));
         if (first_name) results = results.filter(u => u.first_name.toLowerCase().includes(first_name.toLowerCase()));
         if (last_name) results = results.filter(u => u.last_name.toLowerCase().includes(last_name.toLowerCase()));

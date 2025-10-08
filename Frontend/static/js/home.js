@@ -84,8 +84,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Filter table
-    function filterTable() {
+    function filterTable(eventTargetId) {
         const filters = {
+            id: document.getElementById('search-id')?.value || '',
             username: document.getElementById('search-username')?.value || '',
             first_name: document.getElementById('search-first')?.value || '',
             last_name: document.getElementById('search-last')?.value || '',
@@ -95,12 +96,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             regFilterType: document.getElementById('reg-date-filter-type')?.value || '',
             regFilterUser: document.getElementById('reg-date-filter-user')?.value || ''
         };
-
+        
         fetchFilteredUsers(filters);
     }
 
     // --- Attach Enter key listeners ---
-    ['search-username','search-first','search-last','search-age','search-salary','search-last-login']
+    ['search-id', 'search-username','search-first','search-last','search-age','search-salary','search-last-login']
         .forEach(id => {
             const input = document.getElementById(id);
             if (input) input.addEventListener('keydown', (e) => {
@@ -131,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // Reset all other search inputs when changing filter
-            ['search-username','search-first','search-last','search-age','search-salary','search-last-login']
+            ['search-id','search-username','search-first','search-last','search-age','search-salary','search-last-login']
                 .forEach(id => {
                     const input = document.getElementById(id);
                     if (input) input.value = '';
