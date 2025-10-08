@@ -220,6 +220,163 @@ app.get('/search/:last_name', (request, response) => { // we can debug by URL
     .catch(err => console.log(err));
 });
 
+// Search by ID
+app.get('/search/id/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const data = await db.searchById(id);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Search by full name
+app.get('/search/fullname', async (req, res) => {
+    const { first_name, last_name } = req.query;
+    try {
+        const data = await db.searchByFullName(first_name, last_name);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Search by first name
+app.get('/search/first/:first_name', async (req, res) => {
+    const { first_name } = req.params;
+    try {
+        const data = await db.searchByFirstName(first_name);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Search by last name
+app.get('/search/last/:last_name', async (req, res) => {
+    const { last_name } = req.params;
+    try {
+        const data = await db.searchByLastName(last_name);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Search by username
+app.get('/search/username/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+        const data = await db.searchByUsername(username);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Search by salary range
+app.get('/search/salary', async (req, res) => {
+    const { min, max } = req.query;
+    try {
+        const data = await db.searchBySalary(min, max);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Search by age range
+app.get('/search/age', async (req, res) => {
+    const { min, max } = req.query;
+    try {
+        const data = await db.searchByAge(min, max);
+        res.json({ data });
+    } catch (err) {
+        res.status(500).json({ error: "Search failed" });
+    }
+});
+
+// Unified search endpoint
+app.get('/search', async (req, res) => {
+    try {
+        const { username, first_name, last_name, age, salary, lastLogin, regFilterType, regFilterUser } = req.query;
+
+        // Start fresh each time
+        let results = await db.getAccountData();
+
+        // --- Basic filters ---
+        if (username) results = results.filter(u => u.username.toLowerCase().includes(username.toLowerCase()));
+        if (first_name) results = results.filter(u => u.first_name.toLowerCase().includes(first_name.toLowerCase()));
+        if (last_name) results = results.filter(u => u.last_name.toLowerCase().includes(last_name.toLowerCase()));
+
+        // Age range filter
+        if (age) {
+            const [min, max] = age.split('-').map(a => parseInt(a.trim(), 10));
+            if (!isNaN(min)) results = results.filter(u => u.age >= min);
+            if (!isNaN(max)) results = results.filter(u => u.age <= max);
+        }
+
+        // Salary range filter
+        if (salary) {
+            const [min, max] = salary.split('-').map(a => parseFloat(a.trim()));
+            if (!isNaN(min)) results = results.filter(u => u.salary >= min);
+            if (!isNaN(max)) results = results.filter(u => u.salary <= max);
+        }
+
+        // Last login filter
+        if (lastLogin) {
+            if (lastLogin.toLowerCase() === 'never') {
+                results = results.filter(u => !u.last_login_date);
+            } else {
+                results = results.filter(u => {
+                    if (!u.last_login_date) return false;
+                    const loginDate = new Date(u.last_login_date);
+                    return !isNaN(loginDate) && loginDate.toISOString().split('T')[0].includes(lastLogin);
+                });
+            }
+        }
+
+        // --- Registration filters ---
+        if (regFilterType) {
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            if (regFilterType === 'today') {
+                results = results.filter(u => {
+                    if (!u.registration_date) return false;
+                    const regDate = new Date(u.registration_date);
+                    return !isNaN(regDate) && regDate.toISOString().split('T')[0] === todayStr;
+                });
+            } else if ((regFilterType === 'same-day-user' || regFilterType === 'after-user') && regFilterUser) {
+                const refUser = await db.searchByUsername(regFilterUser);
+
+                if (!refUser || refUser.length === 0 || !refUser[0].registration_date) {
+                    console.warn("Reference user not found or missing registration date. Skipping filter.");
+                } else {
+                    const refDate = new Date(refUser[0].registration_date);
+                    if (!isNaN(refDate)) {
+                        results = results.filter(u => {
+                            if (!u.registration_date) return false;
+                            const regDate = new Date(u.registration_date);
+                            if (isNaN(regDate)) return false;
+
+                            if (regFilterType === 'same-day-user') return regDate.toDateString() === refDate.toDateString();
+                            if (regFilterType === 'after-user') return regDate >= refDate;
+                        });
+                    }
+                }
+            }
+        }
+
+        res.json({ data: results });
+
+    } catch (error) {
+        console.error("Search Error:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
 
 // configures node js application on port in .env
 // set up web server listener

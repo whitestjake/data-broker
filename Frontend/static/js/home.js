@@ -1,7 +1,6 @@
 
 import { loadNavbar } from '/static/js/nav.js';
 
-
 document.addEventListener("DOMContentLoaded", async () => {
 
     loadNavbar();
@@ -10,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
 
     if (loggedInUser) {
-        welcomeDiv.textContent = `Welcome ${capitalize(loggedInUser.firstName)}, this is your data home page`;
+        welcomeDiv.textContent = `Welcome ${capitalize(loggedInUser.firstName)}, this is your data page`;
     } else {
         welcomeDiv.textContent = "Welcome, please log in!";
     }
@@ -18,36 +17,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tableBody = document.getElementById('data-table-body');
     let allUsers = [];
 
-    // Fetch all users from backend
-    async function fetchUsers() {
+    // Fetch users based on filters
+    async function fetchFilteredUsers(filters) {
         try {
-            const res = await fetch('http://localhost:5050/accounts'); // Make sure you have this route
+            const query = new URLSearchParams(filters).toString();
+            const res = await fetch(`http://localhost:5050/search?${query}`);
             const data = await res.json();
-            allUsers = data.data; 
-            console.log(allUsers);
+
+            if (data.error) {
+                console.warn(data.error);
+                renderTable([]);
+                return;
+            }
+
+            allUsers = data.data;
             renderTable(allUsers);
         } catch (err) {
-            console.error('Error fetching users:', err);
+            console.error("Search error:", err);
         }
     }
 
-    // Capitalize first letter helper
-    function capitalize(str) {
-        if (!str) return '';
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    // Format salary as currency
-    function formatCurrency(num) {
-        if (isNaN(num)) return '';
-        return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    // Render the table based on array of users
+    // Render table
     function renderTable(users) {
         tableBody.innerHTML = '';
         users.forEach(user => {
             const tr = document.createElement('tr');
+
+            // registration date
+            let regDateStr = '';
+            if (user.registration_date) {
+                const regDate = new Date(user.registration_date);
+                if (!isNaN(regDate)) regDateStr = regDate.toLocaleDateString();
+            }
+
+            // last login
+            let lastLoginStr = 'Never';
+            if (user.last_login_date) {
+                const loginDate = new Date(user.last_login_date);
+                if (!isNaN(loginDate)) lastLoginStr = loginDate.toISOString().split('T')[0];
+            }
 
             tr.innerHTML = `
                 <td>${user.id}</td>
@@ -56,77 +64,92 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <td>${capitalize(user.last_name)}</td>
                 <td>${user.age}</td>
                 <td>${formatCurrency(user.salary)}</td>
-                <td>${user.registration_date ? new Date(user.registration_date).toISOString().split('T')[0]: ''}</td>
-                <td>${user.last_login_date ? new Date(user.last_login_date).toISOString().split('T')[0] : 'Never'}</td>
+                <td>${regDateStr}</td>
+                <td>${lastLoginStr}</td>
             `;
             tableBody.appendChild(tr);
         });
     }
 
-    // Filter function
-    function filterTable() {
-        const usernameInput = document.getElementById('search-username').value.toLowerCase();
-        const firstInput = document.getElementById('search-first').value.toLowerCase();
-        const lastInput = document.getElementById('search-last').value.toLowerCase();
-        const ageInput = document.getElementById('search-age').value;
-        const salaryInput = document.getElementById('search-salary').value;
-        const regDateInput = document.getElementById('search-reg-date').value;
-        const lastLoginInput = document.getElementById('search-last-login').value.toLowerCase();
-
-        const filtered = allUsers.filter(user => {
-            // Username filter
-            if (usernameInput && !user.username.toLowerCase().includes(usernameInput)) return false;
-
-            // First name filter
-            if (firstInput && !user.first_name.toLowerCase().includes(firstInput)) return false;
-
-            // Last name filter
-            if (lastInput && !user.last_name.toLowerCase().includes(lastInput)) return false;
-
-            // Age filter
-            if (ageInput) {
-                const [min, max] = ageInput.split('-').map(a => parseInt(a.trim(), 10));
-                if (!isNaN(min) && user.age < min) return false;
-                if (!isNaN(max) && user.age > max) return false;
-            }
-
-            // Salary filter
-            if (salaryInput) {
-                const [min, max] = salaryInput.split('-').map(a => parseFloat(a.trim()));
-                if (!isNaN(min) && user.salary < min) return false;
-                if (!isNaN(max) && user.salary > max) return false;
-            }
-
-            // Registration date filter
-            if (regDateInput) {
-                const regDate = user.registration_date.split('T')[0];
-                if (!regDate.includes(regDateInput)) return false;
-            }
-
-            // Last login filter
-            if (lastLoginInput) {
-                if (lastLoginInput === 'never' && user.last_login !== null) return false;
-                if (lastLoginInput !== 'never' && user.last_login) {
-                    const lastLoginDate = new Date(user.last_login).toISOString().split('T')[0];
-                    if (!lastLoginDate.includes(lastLoginInput)) return false;
-                }
-            }
-
-            return true;
-        });
-
-        renderTable(filtered);
+    // Capitalize first letter
+    function capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    // Add event listeners for search inputs
-    ['search-username','search-first','search-last','search-age','search-salary','search-reg-date','search-last-login']
+    // Format salary
+    function formatCurrency(num) {
+        if (isNaN(num)) return '';
+        return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Filter table
+    function filterTable() {
+        const filters = {
+            username: document.getElementById('search-username')?.value || '',
+            first_name: document.getElementById('search-first')?.value || '',
+            last_name: document.getElementById('search-last')?.value || '',
+            age: document.getElementById('search-age')?.value || '',
+            salary: document.getElementById('search-salary')?.value || '',
+            lastLogin: document.getElementById('search-last-login')?.value || '',
+            regFilterType: document.getElementById('reg-date-filter-type')?.value || '',
+            regFilterUser: document.getElementById('reg-date-filter-user')?.value || ''
+        };
+
+        fetchFilteredUsers(filters);
+    }
+
+    // --- Attach Enter key listeners ---
+    ['search-username','search-first','search-last','search-age','search-salary','search-last-login']
         .forEach(id => {
             const input = document.getElementById(id);
-            if (input) input.addEventListener('input', filterTable);
+            if (input) input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') filterTable();
+            });
         });
 
-    await fetchUsers();
+    const regUserInput = document.getElementById('reg-date-filter-user');
+    if (regUserInput) {
+        regUserInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') filterTable();
+        });
+    }
+
+    // --- Handle registration filter dropdown ---
+    const regFilterSelect = document.getElementById('reg-date-filter-type');
+    if (regFilterSelect) {
+        regFilterSelect.addEventListener('change', () => {
+            const inputBox = document.getElementById('reg-date-filter-user');
+
+            // Show input only for user-based filters
+            if (regFilterSelect.value.includes('user')) {
+                inputBox.style.display = 'block';
+                inputBox.value = ''; // reset previous value
+            } else {
+                inputBox.style.display = 'none';
+                inputBox.value = '';
+            }
+
+            // Reset all other search inputs when changing filter
+            ['search-username','search-first','search-last','search-age','search-salary','search-last-login']
+                .forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) input.value = '';
+                });
+
+            // Immediately fetch with new filter type
+            filterTable();
+        });
+    }
+
+    // Initial fetch: show all users
+    await fetchFilteredUsers({});
 });
+
+
+
+
+
 
 
 

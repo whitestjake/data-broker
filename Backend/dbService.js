@@ -40,7 +40,7 @@ class DbService{
       try{
             const creationDate = new Date();
             const insertId = await new Promise((resolve, reject)=>{
-               const query = "INSERT INTO accounts (first_name, last_name, age, salary, username, password, date_created)" 
+               const query = "INSERT INTO accounts (first_name, last_name, age, salary, username, password, registration_date)" 
                  + " VALUES (?, ?, ?, ?, ?, ?, ?);";
                this.connection.query(query, [firstName, lastName, age, salary, user, password, creationDate], (err, result) => {
                   if(err) reject(new Error(err.message));
@@ -173,7 +173,7 @@ class DbService{
             );
         
             // console.log("dbServices.js: search result:");
-            console.log(response);  // for debugging to see the result of select
+            // console.log(response);  // for debugging to see the result of select
             return response;
 
         }  catch(error){
@@ -213,7 +213,7 @@ class DbService{
              const response = await new Promise((resolve, reject) => 
                   {
                      const query = "SELECT * FROM names where name = ?;";
-                     connection.query(query, [name], (err, results) => {
+                     this.connection.query(query, [name], (err, results) => {
                          if(err) reject(new Error(err.message));
                          else resolve(results);
                      });
@@ -235,7 +235,7 @@ class DbService{
               const response = await new Promise((resolve, reject) => 
                   {
                      const query = "DELETE FROM names WHERE id = ?;";
-                     connection.query(query, [id], (err, result) => {
+                     this.connection.query(query, [id], (err, result) => {
                           if(err) reject(new Error(err.message));
                           else resolve(result.affectedRows);
                      });
@@ -261,7 +261,7 @@ class DbService{
            const response = await new Promise((resolve, reject) => 
                {
                   const query = "UPDATE names SET name = ? WHERE id = ?;";
-                  connection.query(query, [newName, id], (err, result) => {
+                  this.connection.query(query, [newName, id], (err, result) => {
                        if(err) reject(new Error(err.message));
                        else resolve(result.affectedRows);
                   });
@@ -349,6 +349,21 @@ class DbService{
       }
    }
 
+   async searchByUsername(user) {
+      try {
+         const response = await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE LOWER(username) = LOWER(?);";
+               this.connection.query(query, [user], (err, results) => {
+                  if (err) reject(new Error(err.message));
+                  else resolve(results);
+               });
+         });
+         return response;
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
    /*
       Search by user's full name
    */
@@ -402,6 +417,41 @@ class DbService{
          console.log(error);
       }
    }
+
+   // Search users who registered on a specific date
+   async searchByRegistrationDate(date) {
+      try {
+         const response = await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE DATE(date_created) = ?";
+               this.connection.query(query, [date], (err, results) => {
+                  if (err) reject(new Error(err.message));
+                  else resolve(results);
+               });
+         });
+         return response;
+      } catch (error) {
+         console.log(error);
+         throw error;
+      }
+   }
+
+   // Search users who registered after a specific date
+   async searchRegisteredAfter(date) {
+      try {
+         const response = await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE DATE(date_created) > ?";
+               this.connection.query(query, [date], (err, results) => {
+                  if (err) reject(new Error(err.message));
+                  else resolve(results);
+               });
+         });
+         return response;
+      } catch (error) {
+         console.log(error);
+         throw error;
+      }
+   }
+
 }
 
 export default DbService;
