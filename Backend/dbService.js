@@ -133,29 +133,6 @@ class DbService{
    to work with the asynchronous nature of the connection.query method, allowing 
    the function to pause until the query is completed.
    */
-    async getAllData(){
-        try{
-           // use await to call an asynchronous function
-           const response = await new Promise((resolve, reject) => 
-              {
-                  const query = "SELECT * FROM names;";
-                  this.connection.query(query, 
-                       (err, results) => {
-                             if(err) reject(new Error(err.message));
-                             else resolve(results);
-                       }
-                  );
-               }
-            );
-        
-            // console.log("dbServices.js: search result:");
-            // console.log(response);  // for debugging to see the result of select
-            return response;
-
-        }  catch(error){
-           console.log(error);
-        }
-   }
 
    // queries the database to get all values in the `accounts` table
     async getAccountData(){
@@ -174,107 +151,13 @@ class DbService{
             );
         
             // console.log("dbServices.js: search result:");
-            console.log(response);  // for debugging to see the result of select
+            // console.log(response);  // for debugging to see the result of select
             return response;
 
         }  catch(error){
            console.log(error);
         }
    }
-
-
-   async insertNewName(name){
-         try{
-            const dateAdded = new Date();
-            // use await to call an asynchronous function
-            const insertId = await new Promise((resolve, reject) => 
-            {
-               const query = "INSERT INTO names (name, date_added) VALUES (?, ?);";
-               this.connection.query(query, [name, dateAdded], (err, result) => {
-                   if(err) reject(new Error(err.message));
-                   else resolve(result.insertId);
-               });
-            });
-            console.log(insertId);  // for debugging to see the result of select
-            return{
-                 id: insertId,
-                 name: name,
-                 dateAdded: dateAdded
-            }
-         } catch(error){
-               console.log(error);
-         }
-   }
-
-
-   async searchByName(name){
-        try{
-             const dateAdded = new Date();
-             // use await to call an asynchronous function
-             const response = await new Promise((resolve, reject) => 
-                  {
-                     const query = "SELECT * FROM names where name = ?;";
-                     this.connection.query(query, [name], (err, results) => {
-                         if(err) reject(new Error(err.message));
-                         else resolve(results);
-                     });
-                  }
-             );
-
-             // console.log(response);  // for debugging to see the result of select
-             return response;
-
-         }  catch(error){
-            console.log(error);
-         }
-   }
-
-   async deleteRowById(id){
-         try{
-              id = parseInt(id, 10);
-              // use await to call an asynchronous function
-              const response = await new Promise((resolve, reject) => 
-                  {
-                     const query = "DELETE FROM names WHERE id = ?;";
-                     this.connection.query(query, [id], (err, result) => {
-                          if(err) reject(new Error(err.message));
-                          else resolve(result.affectedRows);
-                     });
-                  }
-               );
-
-               console.log(response);  // for debugging to see the result of select
-               return response === 1? true: false;
-
-         }  catch(error){
-              console.log(error);
-         }
-   }
-
-  
-  async updateNameById(id, newName){
-      try{
-           console.log("dbService: ");
-           console.log(id);
-           console.log(newName);
-           id = parseInt(id, 10);
-           // use await to call an asynchronous function
-           const response = await new Promise((resolve, reject) => 
-               {
-                  const query = "UPDATE names SET name = ? WHERE id = ?;";
-                  this.connection.query(query, [newName, id], (err, result) => {
-                       if(err) reject(new Error(err.message));
-                       else resolve(result.affectedRows);
-                  });
-               }
-            );
-
-            // console.log(response);  // for debugging to see the result of select
-            return response === 1? true: false;
-      }  catch(error){
-         console.log(error);
-      }
-  }
 
    /*
         update the user's last login timestamp in the database
@@ -350,6 +233,21 @@ class DbService{
       }
    }
 
+   async searchByUsername(user) {
+      try {
+         const response = await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE LOWER(username) = LOWER(?);";
+               this.connection.query(query, [user], (err, results) => {
+                  if (err) reject(new Error(err.message));
+                  else resolve(results);
+               });
+         });
+         return response;
+      } catch (error) {
+         console.log(error);
+      }
+   }
+
    /*
       Search by user's full name
    */
@@ -403,6 +301,41 @@ class DbService{
          console.log(error);
       }
    }
+
+   // Search users who registered on a specific date
+   async searchByRegistrationDate(date) {
+      try {
+         const response = await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE DATE(date_created) = ?";
+               this.connection.query(query, [date], (err, results) => {
+                  if (err) reject(new Error(err.message));
+                  else resolve(results);
+               });
+         });
+         return response;
+      } catch (error) {
+         console.log(error);
+         throw error;
+      }
+   }
+
+   // Search users who registered after a specific date
+   async searchRegisteredAfter(date) {
+      try {
+         const response = await new Promise((resolve, reject) => {
+               const query = "SELECT * FROM accounts WHERE DATE(date_created) > ?";
+               this.connection.query(query, [date], (err, results) => {
+                  if (err) reject(new Error(err.message));
+                  else resolve(results);
+               });
+         });
+         return response;
+      } catch (error) {
+         console.log(error);
+         throw error;
+      }
+   }
+
 }
 
 export default DbService;

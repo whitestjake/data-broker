@@ -30,10 +30,67 @@ body {
     color: #4300FF;
 }
 
+/* Wrap the table in a scrollable container */
+.table-wrapper {
+    max-height: 60vh;           
+    overflow-y: auto;           
+    overflow-x: hidden;         
+    margin: 2rem auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    background-color: white;    
+}
+
+/* Ensure table fills container */
+.table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Sticky headers */
+#data-table thead tr {
+    position: sticky;
+    top: 0;
+    background-color: #0065F8;
+    color: white;
+    z-index: 2;
+}
+
+/* Table cells */
+#data-table th, #data-table td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+/* First column adjustments */
+#data-table th:first-child,
+#data-table td:first-child {
+    width: 2.1em;
+    text-align: center;
+}
+
+/* Alternate row colors */
+#data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Inputs inside table headers */
+#data-table input, #data-table select {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
 
 /* Data table styling */
 #data-table {
-    margin-top: 2rem;
     border-collapse: collapse;
     box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
     background-color: white;
@@ -67,12 +124,6 @@ body {
     box-sizing: border-box;
 }
 
-#data-table th:first-child,
-#data-table td:first-child {
-    width: 2em; /* adjust as needed */
-    text-align: center; /* optional: center content */
-}
-
 #reg-date-filter-user {
     margin-top: 0.25rem;
     display: none;
@@ -82,21 +133,3 @@ body {
 #data-table tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
-
-/* Wrap the table in a scrollable container */
-.table-wrapper {
-    max-height: 60vh; /* adjust height as needed */
-    overflow-y: auto; /* vertical scroll if needed */
-    overflow-x: hidden; /* optional: hide horizontal scroll */
-    margin: 2rem auto;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
-}
-
-/* Ensure table fits container */
-.table-wrapper table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-

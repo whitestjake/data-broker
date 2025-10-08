@@ -1,12 +1,6 @@
 CREATE DATABASE IF NOT EXISTS dse6100_project1;
 USE dse6100_project1;
 
-CREATE TABLE IF NOT EXISTS names (
-    id int not null auto_increment,
-    name varchar(20),
-    date_added Date,
-    primary key (id)  
-);
 
 -- User accounts table with login tracking
 CREATE TABLE IF NOT EXISTS accounts (
