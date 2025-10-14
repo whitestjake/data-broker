@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="/static/css/nav.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/layout.css">
     <script src="https://kit.fontawesome.com/f5ff6087ca.js" crossorigin="anonymous"></script>
     <title>Data Broker - Main Page</title>
 </head>
-<body>
+<body class="bg-light">
     <div id="navbar-container"></div>
 
-    <main>
-        <div id="login-welcome-message">
-            <h1>Welcome to your Data Broker</h1>
-            <p>Manage your data efficently</p>
+    <div class="container-fluid index-content d-flex flex-column justify-content-center align-items-center">
+        <div class="welcome-title">
+            <h1 class="text-primary fw-bold mb-3">Welcome to Data Broker</h1>
+            <p class="text-muted fs-5">Manage your data efficiently</p>
         </div>
+        <div id="login-container" class="w-100 d-flex justify-content-center"></div>
+    </div>
 
-        <div id="login-container"></div>
-        <!-- <div id="register-container"></div> -->
-    </main>
-
-<script type="module" src="/static/js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/static/js/index.js"></script>
 </body>
 </html>
 
