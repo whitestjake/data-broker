@@ -3,102 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/css/register.css">
-    <link rel="stylesheet" href="/static/css/nav.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/layout.css">
     <title>Register Page</title>
-
 </head>
-<body>
+<body class="bg-light">
     <div id="navbar-container"></div>
-    <main>
-        <div class="registration-message">
-            <h3>Register</h3>
-            <p>Create a new account to get started</p>
+    
+    <div class="container-fluid main-content d-flex justify-content-center align-items-center">
+        <div class="card shadow border-0 register-card" id="register-container">
+            <div class="card-body p-3">
+                <div class="text-center mb-3">
+                    <h4 class="card-title text-primary mb-1">Register</h4>
+                    <p class="text-muted small">Create a new account to get started</p>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label for="register-user-input" class="form-label">Username</label>
+                        <p id="user-use-error" class="text-danger small" hidden>Username already in use</p>
+                        <p id="user-valid-error" class="text-danger small" hidden>Please enter a valid username</p>
+                        <input type="text" class="form-control" id="register-user-input" placeholder="Enter your user" name="register-user-input">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="register-first-name-input" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="register-first-name-input" placeholder="Enter your first name" name="register-first-name-input">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="register-last-name-input" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="register-last-name-input" placeholder="Enter your last name" name="register-last-name-input">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="register-age-input" class="form-label">Age</label>
+                        <input type="text" class="form-control" id="register-age-input" placeholder="Enter your age" name="register-age-input">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="register-salary-input" class="form-label">Salary</label>
+                        <input type="text" class="form-control" id="register-salary-input" placeholder="Enter your salary" name="register-salary-input">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="register-password-input" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="register-password-input" placeholder="Enter your password" name="register-password-input">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="register-confirm-password-input" class="form-label">Confirm Password</label>
+                        <p id="password-error" class="text-danger small" hidden>passwords do not match</p>
+                        <input type="password" class="form-control" id="register-confirm-password-input" placeholder="Re-enter your password" name="register-confirm-password-input">
+                    </div>
+
+                    <div class="col-12">
+                        <button id="register-button" class="btn btn-primary w-100">Register</button>
+                        <p id="register-success" class="text-success small text-center mt-2" hidden>Registration successful!</p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div id="register-form">
-            <div class="register-user-container">
-                <label for="register-user-input">Username</label>
-                <p id="user-use-error" style="color:red" hidden="hidden">
-                    Username already in use
-                </p>
-                <p id="user-valid-error" style="color:red" hidden="hidden">
-                    Please enter a valid username
-                </p>
-                <input type="text" 
-                    id="register-user-input" 
-                    placeholder="Enter your user"
-                    name="register-user-input"
-                >
-            </div>
-
-            <div class="register-first-name-container">
-                <label for="register-first-name-input">First Name</label>
-                <input type="text" 
-                    id="register-first-name-input" 
-                    placeholder="Enter your first name"
-                    name="register-first-name-input"
-                >
-            </div>
-
-            <div class="register-last-name-container">
-                <label for="register-last-name-input">Last Name</label>
-                <input type="text" 
-                    id="register-last-name-input" 
-                    placeholder="Enter your last name"
-                    name="register-last-name-input"
-                >
-            </div>
-
-            <div class="register-age-container">
-                <label for="register-age-input">Age</label>
-                <input type="text" 
-                    id="register-age-input" 
-                    placeholder="Enter your age"
-                    name="register-age-input"
-                >
-            </div>
-
-            <div class="register-salary-container">
-                <label for="register-salary-input">Salary</label>
-                <input type="text" 
-                    id="register-salary-input" 
-                    placeholder="Enter your salary"
-                    name="register-salary-input"
-                >
-            </div>
-
-            <div class="register-password-container">
-                <label for="register-password-input">Password</label>
-                <input 
-                    type="password" 
-                    id="register-password-input" 
-                    placeholder="Enter your password"
-                    name="register-password-input"
-                >
-            </div>
-
-            <div class="register-confirm-password-container">
-                <label for="register-confirm-password-input">Confirm Password</label>
-                <p id="password-error" style="color:red" hidden="hidden">
-                    passwords do not match
-                </p>
-                <input 
-                    type="password" 
-                    id="register-confirm-password-input" 
-                    placeholder="Re-enter your password"
-                    name="register-confirm-password-input"
-                >
-            </div>
-
-            <button id="register-button">Register</button>
-
-            <p id="register-success" style="color:green" hidden="hidden">
-                Registration successful!
-            </p>
-        </div>
-
-    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="/static/js/register.js"></script>
 </body>
 </html>

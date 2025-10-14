@@ -29,15 +29,16 @@ export function initRegisterForm(container) {
     container.addEventListener('click', (e) => {
         if (e.target.id !== 'register-button') return;
 
-        const formContainer = e.target.closest('div') || container;
+        // Use the main container or document to find inputs
+        const formContainer = container;
 
-        const firstNameInput = formContainer.querySelector("#register-first-name-input");
-        const lastNameInput = formContainer.querySelector("#register-last-name-input");
-        const ageInput = formContainer.querySelector("#register-age-input");
-        const salaryInput = formContainer.querySelector("#register-salary-input");
-        const userInput = formContainer.querySelector("#register-user-input");
-        const passwordInput = formContainer.querySelector("#register-password-input");
-        const confirmInput = formContainer.querySelector("#register-confirm-password-input");
+        const firstNameInput = document.querySelector("#register-first-name-input");
+        const lastNameInput = document.querySelector("#register-last-name-input");
+        const ageInput = document.querySelector("#register-age-input");
+        const salaryInput = document.querySelector("#register-salary-input");
+        const userInput = document.querySelector("#register-user-input");
+        const passwordInput = document.querySelector("#register-password-input");
+        const confirmInput = document.querySelector("#register-confirm-password-input");
 
         if (!firstNameInput || !lastNameInput || !ageInput || !salaryInput || !userInput || !passwordInput || !confirmInput) {
             console.warn("Register inputs not found");
@@ -55,7 +56,7 @@ export function initRegisterForm(container) {
         // Validation
 
         if (password !== confirm) {
-            formContainer.querySelector('#password-error')?.removeAttribute('hidden');
+            document.querySelector('#password-error')?.removeAttribute('hidden');
             return;
         }
 
@@ -80,15 +81,15 @@ export function initRegisterForm(container) {
         .then(res => res.json())
         .then(data => {
             if (data.error) {
-                formContainer.querySelector("#user-use-error")?.removeAttribute('hidden');
+                document.querySelector("#user-use-error")?.removeAttribute('hidden');
                 console.log('Error: ' + data.error);
             } else {
-                formContainer.querySelector('#register-success')?.removeAttribute('hidden');
+                document.querySelector('#register-success')?.removeAttribute('hidden');
                 console.log("Registration Successful");
 
                 // store logged in user 
                 sessionStorage.setItem('loggedInUser', JSON.stringify({
-                    username: data.data.user,
+                    username: data.data.username,
                     firstName: data.data.firstName
                 }));
 

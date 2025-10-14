@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (loggedInUser) {
         welcomeDiv.textContent = `Welcome ${capitalize(loggedInUser.firstName)}, this is your data page`;
     } else {
-        welcomeDiv.textContent = "Welcome, please log in!";
+        welcomeDiv.textContent = `Welcome, please log in!`;
     }
 
     const tableBody = document.getElementById('data-table-body');
@@ -124,10 +124,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // Show input only for user-based filters
             if (regFilterSelect.value.includes('user')) {
-                inputBox.style.display = 'block';
+                inputBox.classList.remove('d-none');
                 inputBox.value = ''; // reset previous value
             } else {
-                inputBox.style.display = 'none';
+                inputBox.classList.add('d-none');
                 inputBox.value = '';
             }
 
