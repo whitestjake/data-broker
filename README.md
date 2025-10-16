@@ -3,7 +3,7 @@ This project is a way to demonstrate database communication and sorting through 
 1. We will use the Apache web server. Create the first webpage index.html under ```C:\xampp\htdocs>``` (or similar directory where you installed XAMPP) and point your browser to ```http://localhost/index.html``` and 
 you should see your first webpage. The purpose of this step is to confirm that the Web server is running, and understand the ROOT URL points to the path location: C:\xampp\htdocs or similar directory in your file system.
 Start your Apache Web Server and MySQL server as well as you will be using these to actually run the program
-2. At your ```xampp\htdocs``` directory (which will vary depending on where you installed XAMPP to your device), run ```git clone https://github.com/whitestjake/data-broker``` this will copy the entire code into your directory
+2. At your ```C:\xampp\htdocs``` directory (which will vary depending on where you installed XAMPP to your device), run ```git clone https://github.com/whitestjake/data-broker``` this will copy the entire code into your directory
 3. Now in order to properly access the content, you will need to create your database and table to match this projects, in your project files there will be a file ```sql.txt``` you may copy and paste the contents of this file into your SQL to create the respective database and table
 4. Now you will need to create a .env file in your backend, ours looks like this, but you will need to edit yours based on what will work for your database configuration
    ```
