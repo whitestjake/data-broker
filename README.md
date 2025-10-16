@@ -1,6 +1,6 @@
 This project is a way to demonstrate database communication and sorting through that data for an easier to interact with user interface
 
-1. We will use the Apache web server. Create the first webpage index.html under ```C:\xampp\htdocs>``` (or similar directory where you installed XAMPP) and point your browser to ```http://localhost/index.html``` and 
+1. We will use the Apache web server. Create the first webpage index.html under ```C:\xampp\htdocs``` (or whatever directory you installed XAMPP) and point your browser to ```http://localhost/index.html``` and 
 you should see your first webpage. The purpose of this step is to confirm that the Web server is running, and understand the ROOT URL points to the path location: C:\xampp\htdocs or similar directory in your file system.
 Start your Apache Web Server and MySQL server as well as you will be using these to actually run the program
 2. At your ```C:\xampp\htdocs``` directory (which will vary depending on where you installed XAMPP to your device), run ```git clone https://github.com/whitestjake/data-broker``` this will copy the entire code into your directory
