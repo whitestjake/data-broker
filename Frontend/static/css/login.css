@@ -1,0 +1,96 @@
+
+
+/* Primary login container */
+#primary-login-container {
+    max-width: 25rem;          /* ~400px relative */
+    width: 90%;                /* responsive width */
+    padding: 1rem;
+    border: 0.1rem solid #ccc; /* relative border */
+    border-radius: 1rem;
+    background-color: #f9f9f9;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Title */
+#login-title h2 {
+    margin-bottom: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+#login-title p {
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: #555;
+    font-size: 1rem;
+}
+
+/* Input groups */
+.input-group {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+/* FontAwesome icon */
+.input-group i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 1rem;
+    pointer-events: none; /* clicks pass through to input */
+}
+
+/* Input fields */
+.input-group input {
+    width: 100%;
+    padding: 0.625rem 0.625rem 0.625rem 2.5rem; /* space for icon */
+    height: 2.625rem; /* relative height */
+    border: 0.1rem solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Focused input */
+.input-group input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0.25rem rgba(0,123,255,0.3);
+}
+
+.input-group input:focus + i {
+    color: #007bff;
+}
+
+/* Login button */
+#login-button {
+    width: 100%;
+    padding: 0.625rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#login-button:hover {
+    background-color: #0056b3;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+
+

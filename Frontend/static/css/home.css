@@ -1,0 +1,142 @@
+
+
+/* General layout */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background: #f0f2f5;
+}
+
+/* Navbar stays at top-left */
+#navbar-container {
+    align-self: flex-start;
+    width: 100%;
+    margin: 0;
+}
+
+/* Welcome message box */
+#home-welcome {
+    margin-top: 2rem;
+    width: 90%;
+    text-align: center;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    font-size: 1.2rem;
+    color: #4300FF;
+}
+
+
+/* Data table styling */
+#data-table {
+    border-collapse: collapse;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    background-color: white;
+    border-radius: 0.5rem;
+    table-layout: fixed; /* ensures all columns have even widths */
+    overflow: hidden;
+}
+
+#data-table th, #data-table td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+    vertical-align: middle;
+    word-wrap: break-word; /* ensures text wraps inside fixed-width cells */
+}
+
+#data-table th {
+    background: #0065F8;
+    color: white;
+    font-weight: 600;
+}
+
+/* Inputs inside table headers */
+#data-table input, #data-table select {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+#data-table th:first-child,
+#data-table td:first-child {
+    width: 2em; /* adjust as needed */
+    text-align: center; /* optional: center content */
+}
+
+#reg-date-filter-user {
+    margin-top: 0.25rem;
+    display: none;
+}
+
+/* Alternate row colors */
+#data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Wrap the table in a scrollable container */
+.table-wrapper {
+    max-height: 60vh;           /* limit height of table body */
+    overflow-y: auto;           /* vertical scroll for rows */
+    overflow-x: hidden;         /* prevent horizontal scroll */
+    margin: 2rem auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+    background-color: white;    /* ensure sticky header works on white background */
+}
+
+/* Ensure table fills container */
+.table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Sticky headers */
+#data-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #0065F8;
+    color: white;
+    z-index: 2;
+}
+
+/* Table cells */
+#data-table th, #data-table td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+/* First column adjustments */
+#data-table th:first-child,
+#data-table td:first-child {
+    width: 2em;
+    text-align: center;
+}
+
+/* Alternate row colors */
+#data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Inputs inside table headers */
+#data-table input, #data-table select {
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
