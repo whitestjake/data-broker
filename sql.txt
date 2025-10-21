@@ -1,8 +1,6 @@
 CREATE DATABASE IF NOT EXISTS dse6100_project1;
 USE dse6100_project1;
 
-USE dse6100_project1;
-
 -- User accounts table with login tracking
 CREATE TABLE IF NOT EXISTS accounts (
     id int not null auto_increment,
